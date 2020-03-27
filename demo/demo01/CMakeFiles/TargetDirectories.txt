@@ -1,0 +1,3 @@
+/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/CMakeFiles/rebuild_cache.dir
+/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/CMakeFiles/edit_cache.dir
+/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/CMakeFiles/opencv_demo.dir
