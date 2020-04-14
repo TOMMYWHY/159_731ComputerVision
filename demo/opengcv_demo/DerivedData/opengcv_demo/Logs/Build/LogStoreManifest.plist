@@ -5,6 +5,41 @@
 	<key>logFormatVersion</key>
 	<integer>10</integer>
 	<key>logs</key>
-	<dict/>
+	<dict>
+		<key>4EEC4AB6-1953-4CC3-AF41-631B791D6265</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>4EEC4AB6-1953-4CC3-AF41-631B791D6265.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>opengcv_demo project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>opengcv_demo</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build opengcv_demo</string>
+			<key>timeStartedRecording</key>
+			<real>608463506.40239704</real>
+			<key>timeStoppedRecording</key>
+			<real>608463509.66380703</real>
+			<key>title</key>
+			<string>Build opengcv_demo</string>
+			<key>uniqueIdentifier</key>
+			<string>4EEC4AB6-1953-4CC3-AF41-631B791D6265</string>
+		</dict>
+	</dict>
 </dict>
 </plist>
