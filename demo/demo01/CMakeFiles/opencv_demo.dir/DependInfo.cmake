@@ -4,12 +4,13 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/week03/main.cpp" "/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/CMakeFiles/opencv_demo.dir/week03/main.cpp.o"
+  "/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/week04/main.cpp" "/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/CMakeFiles/opencv_demo.dir/week04/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "include"
   "/usr/local/Cellar/opencv/4.2.0_1/include/opencv4"
   )
 

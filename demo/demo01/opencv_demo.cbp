@@ -44,6 +44,7 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/include"/>
 					<Add directory="/usr/local/Cellar/opencv/4.2.0_1/include/opencv4"/>
 				</Compiler>
 				<MakeCommands>
@@ -60,6 +61,7 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/include"/>
 					<Add directory="/usr/local/Cellar/opencv/4.2.0_1/include/opencv4"/>
 				</Compiler>
 				<MakeCommands>
@@ -70,7 +72,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/week03/main.cpp">
+		<Unit filename="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/week04/main.cpp">
 			<Option target="opencv_demo"/>
 		</Unit>
 		<Unit filename="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/CMakeLists.txt">

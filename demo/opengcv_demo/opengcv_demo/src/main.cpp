@@ -17,7 +17,7 @@ using namespace cv;
 /*
  read video
  */
-#if 1
+#if 0
 
 int main (){
    
@@ -67,7 +67,7 @@ int main (){
 /*
  kuwahara filter
  */
-#if 0
+#if 1
 Mat image_in =imread("./images/limes.tif",0);
 //Mat image_in =imread("./images/test.jpeg",0);
 Mat image_out;

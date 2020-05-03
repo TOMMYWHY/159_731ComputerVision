@@ -84,7 +84,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment1/demo01/src/main.cpp">
+		<Unit filename="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment1/demo01/src/main-Y.cpp">
 			<Option target="kuwahara"/>
 		</Unit>
 		<Unit filename="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment1/demo01/CMakeLists.txt">

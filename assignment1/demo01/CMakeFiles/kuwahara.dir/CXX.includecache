@@ -6,12 +6,12 @@
 
 #IncludeRegexTransform: 
 
-/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment1/demo01/src/main.cpp
+/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment1/demo01/src/main-Y.cpp
 iostream
 -
 opencv2/opencv.hpp
 -
-algorithm
+math.h
 -
 
 /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/calib3d.hpp

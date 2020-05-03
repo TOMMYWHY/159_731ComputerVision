@@ -14,7 +14,7 @@ using namespace cv;
 /*
  * testing
 */
-#if 0
+#if 1
 int main(){
     Point2f center;
     center.x = 176/2;
@@ -22,7 +22,11 @@ int main(){
 
     Mat img = imread("./images/Lena.jpg",0);
     Mat rotmatrix=getRotationMatrix2D(center, 30, 1);
+    Mat dst;
+    warpAffine(img,dst,rotmatrix,Size(176,176));
     cout<<"testing" <<endl;
+    imshow("result",dst);
+    waitKey(0);
     return 0;
 }
 #endif
@@ -34,7 +38,7 @@ int main(){
  * The program should allow the kernel for the linear filter to be created at different sizes
  * (take a parameter for the kernel size).
 */
-#if 1
+#if 0
 int main(){
 //    Mat img = imread("./images/Lena.jpg",0);
     Mat img = imread("./images/peppers.bmp",0);

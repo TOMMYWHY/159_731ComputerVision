@@ -158,7 +158,7 @@ int getblockSum(Mat &sum, int x1, int y1, int x2, int y2, int i) {
  * kuwahara filter
  *
  * */
-#if 1
+#if 0
 
 Mat image_in;
 Mat image_out;
@@ -368,7 +368,7 @@ int main (int argc, char* argv[]){
  * Negative image
  *
  * */
-#if 0
+#if 1
 int main (int argc, char* argv[]){
 //    if(argc!=2){ cout << "needs 1 argument, e.g. image.jpg" << endl ; exit (0) ;}
 //    Mat img1 = imread(argv[1],0);

@@ -5,216 +5,183 @@
 #include <opencv2/opencv.hpp>
 #include <math.h>
 
+#include "camera_HSV_filter.c"
+#include "camera_RGB_filter.c"
+
 using namespace std;
 using namespace cv;
 
 #define Mpixel(image,x,y) ( (uchar *) ( ((image).data) + (y)*((image).step) ) ) [(x)]
+#define MpixelB(image,x,y) ( (uchar *) ( ((image).data) + (y)*((image).step) ) ) [(x) * ( ( image ).channels() )]
+#define MpixelG(image,x,y) ( (uchar *) ( ((image).data) + (y)*((image).step) ) ) [(x) * ( ( image ).channels() )+1]
+#define MpixelR(image,x,y) ( (uchar *) ( ((image).data) + (y)*((image).step) ) ) [(x) * ( ( image ).channels() )+2]
 
 
 
-/*
- * Hough transform
- * week4 Test3
- * 霍夫变换
- *
+
+/*Exercise 4
+ * todo
 */
-
-#if 0
-
-int th1 = 50,th2=150,maxLineGap=1;
-void callback(int,void*){
-    th1=getTrackbarPos("th1","params");
-    th2=getTrackbarPos("th2","params");
-}
-int main(){
-    VideoCapture capture;
-    capture.open(0);
-
-    namedWindow("params",0);
-    createTrackbar("th1","params",&th1,500,callback);
-    createTrackbar("th2","params",&th2,500,callback);
-    createTrackbar("maxLineGap","params",&maxLineGap,100,callback);
-    callback(0,0);
-
-    Mat frame, mid, dst;
-
-    while(1){
-        capture >>frame;
-        if(frame.empty()){break;}
-        Canny(frame, mid, 50,150,3);
-//        cvtColor(mid, mid, COLOR_GRAY2BGR);// TODO
-        vector<Vec4i> lines;
-
-        HoughLinesP(mid, lines, 1, CV_PI/180,th1,th2,maxLineGap);
-        frame.copyTo(dst);
-        for (int i = 0; i < 20; i++) {
-            Vec4i ln = lines[i];
-            line(dst, Point(ln[0],ln[1]), Point(ln[2],ln[3]), Scalar(0,0,255),3,1 );
-        }
-        imshow("frame",frame);
-        imshow("mid",mid);
-        imshow("dst",dst);
-        if(waitKey()==27){break;}
-    }
-    return 0;
-}
-#endif
-
-/*
- * edge detect
- * week4 Test2
- *
- * Canny
- * Sobel
- * Laplacian
- *
-*/
-#if 0
-int th1 = 50,th2=50;
-void callback(int,void*){
-    th1=getTrackbarPos("th1","params");
-    th2=getTrackbarPos("th2","params");
-}
-int main(){
-    VideoCapture capture;
-    capture.open(0);
-    Mat frame , dst , furtherDst;
-    namedWindow("params",0);
-    createTrackbar("th1","params",&th1,500,callback);
-    createTrackbar("th2","params",&th2,500,callback);
-    callback(0,0);
-    while(1){
-        capture >>frame;
-        if(frame.empty()){break;}
-
-//        cvtColor(frame, frame, COLOR_BGR2GRAY);
-//        Canny(frame, dst, th1,th2);
-//        Sobel(frame, dst,-1, 1,1,3);
-        Laplacian(frame, dst,-1,3);
-//        cvLaplace(frame, dst,3);
-//        convertScaleAbs( dst,furtherDst  ,1.5,10) ; //dst=abs(src*alpha+beta) //没啥卵用
-
-        imshow("frame",frame);
-        imshow("dst",dst);
-//        imshow("furtherDst",furtherDst);
-        if(waitKey()==27){break;}
-
-    }
-    return 0;
-}
-#endif
-
-
-/*
- * edge detect
- * week4 Test1
- *
- * LoG
- *
-*/
-#if 0
-
-int main(){
-    VideoCapture capture;
-    capture.open(0);
-    Mat frame , smooth, gray ,dst ;
-    namedWindow("params",0);
-    while(1){
-        capture >>frame;
-        if(frame.empty()){break;}
-
-        /*two 3x3 kernels*/
-//        GaussianBlur(frame,smooth,Size(3,3),0,0);
-//        cvtColor(smooth, gray, COLOR_BGR2GRAY);
-//        Laplacian(gray, dst,-1,3);
-
-        /*a single 5x5 kernel*/
-//        GaussianBlur(frame,smooth,Size(3,3),0,0);
-        cvtColor(frame, gray, COLOR_BGR2GRAY);
-        Laplacian(gray, dst,-1,5);
-
-
-        imshow("frame",frame);
-        imshow("dst",dst);
-        if(waitKey()==27){
-            break;
-        }
-
-    }
-    return 0;
-}
-#endif
-
-
-
-
-#if 0
-/*
- * Not working
- */
-int main(){
-    int kernel =7;
-    Mat image_in;
-    Mat image_out;
-    image_in = imread("./images/lena.jpg",0);
-
-    Mat my_sum= Mat::zeros(image_in.size(), image_in.type());//最大支持4096*4096分辨率的图像
-    Mat my_sqsum = Mat::zeros(image_in.size(), image_in.type());
-    integral(image_in,my_sum,my_sqsum,CV_32F); //计算积分图sumii
-    cout << "M = " << endl << " " << my_sum << endl << endl;
-    Mat theta;
-//    theta =
-//    cout <<my_sum[100,100] <<endl;
-    waitKey(0);
-    return 0;
-
-
-}
-
-#endif
-
-
-//===================//
-// filters with track bar
-#if 0
-int g_blurValue = 5;
-Mat boxImage,blurImage;
-Mat img = imread("./images/lena.jpg",0);
-static void on_Blur(int, void*){
-    blur(img,boxImage,Size(g_blurValue,g_blurValue));
-    imshow("on_Blur",boxImage);
-};
-int main(int argc, const char * argv[]) {
-    namedWindow("window1");
-    createTrackbar("kernel","window1",&g_blurValue,20,on_Blur);
-    on_Blur(g_blurValue,0);
-    imshow("img1",img);
-
-    waitKey(0);
-    return 0;
-}
-#endif
-//===================//
-
-
-// filters
 #if 1
+
+int main(){
+    VideoCapture capture;
+    capture.open(0);
+    Mat frame,dst ;
+
+    while(1){
+        capture >>frame;
+        if(frame.empty()){break;}
+
+
+        imshow("frame",frame);
+//        imshow("mid",dst);
+        if(waitKey()==27){break;}
+    }
+    return 0;
+}
+#endif
+
+/*Exercise 3
+ * Write a program that segments images by colour.
+ * Use a range of values that is equivalent to a cubic region in the RGB space
+ * (i.e., simple thresholds for each colour component).
+ * Test your code using the images peppers.png and peppers2.png to try to separate the green peppers from the red ones.
+ *
+*/
+#if 0
+
+int main(){
+//    Mat src = imread("./images/lena.jpg", 1);
+    Mat src = imread("./images/peppers.bmp", 1);
+    imshow("src",src);
+    cout << src.channels() << endl;
+    Mat dst = Mat(src.rows, src.cols,CV_8UC3,Scalar(0));
+
+
+    for (int x = 0; x < dst.cols; x++) {
+        for (int y = 0; y <dst.rows ; y++) {
+            if(MpixelB(src,x,y)>100 && MpixelG(src,x,y)<100){
+                MpixelR(dst,x,y)=255;
+                MpixelG(dst,x,y)=0;
+                MpixelB(dst,x,y)=0;
+            }
+             if (MpixelG(src ,x,y)>100 && MpixelR(src ,x,y)<100){
+                MpixelR(dst ,x,y)=0;
+                MpixelG(dst,x,y)=255;
+                MpixelB(dst ,x,y)=0;
+            }
+
+            if (MpixelR(src ,x,y)>200 && MpixelG(src ,x,y)>200){
+                MpixelR(dst,x,y)=255;
+                MpixelG(dst,x,y)=255;
+                MpixelB(dst ,x,y)=0;
+            }
+            if (MpixelR(src ,x,y)>240 && MpixelG(src ,x,y)<200){
+                MpixelR(dst,x,y)=255;
+                MpixelG(dst,x,y)=128;
+                MpixelB(dst ,x,y)=0;
+            }
+        }
+    }
+
+
+
+    imshow("dst",dst);
+
+
+    waitKey(0);
+    return 0;
+}
+#endif
+
+/*Exercise 2
+ * Write a program that converts RGB to HSV and show the three components separately.
+ * Remember that the range of the HSV space is different than that for RGB.
+ * Adopt your own conversion table (e.g., for H, 0 is converted to 0, and 360 is converted to 255).
+ *
+*/
+#if 0
+
+int main(){
+//    Mat src = imread("./images/lena.jpg", 1);
+    Mat src = imread("./images/peppers.bmp", 1);
+    imshow("src",src);
+    Mat dst;
+    cvtColor(src, dst,COLOR_BGR2HSV);
+    imshow("dst",dst);
+
+
+    waitKey(0);
+    return 0;
+}
+#endif
+
+
 /*
- *   boxFilter
- */
-int main(int argc, const char * argv[]) {
-    Mat img = imread("./images/lena.jpg",0);
-    Mat boxImage,blurImage,gaussImage;
+ * Exercise 1
+ * Write a program that shows three greyscale images representing the three components R, G and B of a colour image.
+ * (hint: just create three greyscale images and copy each component to one of them).
+ *
+*/
+#if 0
 
-    boxFilter(img,boxImage,-1,Size(3,3)); //方框滤波 当normalize=true为均值滤波
-//    blur(img,blurImage, Size(7,7));
-    blur(img,blurImage,Size(3,3)); // 均值滤波
-    GaussianBlur(img,gaussImage,Size(3,3),0,0);
+int main(){
+    Mat src = imread("./images/lena.jpg", 1);
+//    Mat src = imread("./images/peppers.bmp", 1);
+    imshow("src",src);
+    vector<Mat> channels ;
+    Mat dst_b,dst_g,dst_r ;
+    split(src,channels);
 
-    imshow("img1",img);
-    imshow("boxImage",boxImage);
-    imshow("blurImage",blurImage);
-//    imshow("gaussImage",gaussImage);
+    dst_b = channels[0].clone();
+    dst_g =channels[1].clone();
+    dst_r =channels[2].clone();
+
+    imshow("dst_b",dst_b);
+    imshow("dst_g",dst_g);
+    imshow("dst_r",dst_r);
+
+    waitKey(0);
+    return 0;
+}
+#endif
+
+/*
+ * 3 channel split
+ * */
+#if 0
+int main(){
+    Mat src = imread("./images/lena.jpg", 1);
+    imshow("src",src);
+
+    vector<Mat> channels ;
+    Mat  temp_channels[3],dst_b,dst_g,dst_r ;
+    split(src,channels);
+
+    temp_channels[0] = channels[0].clone();
+    temp_channels[1] =channels[1].clone();
+    temp_channels[2] =channels[2].clone();
+
+
+    channels[0] = temp_channels[0];
+    channels[1] =0;
+    channels[2] =0;
+    merge(channels,dst_b);
+    imshow("dst_b",dst_b);
+
+    channels[0] =0;
+    channels[1] = temp_channels[1];
+    channels[2] =0;
+    merge(channels,dst_g);
+    imshow("dst_g",dst_g);
+
+    channels[0] =0;
+    channels[1] =0;
+    channels[2] = temp_channels[2];
+    merge(channels,dst_r);
+    imshow("dst_r",dst_r);
+
     waitKey(0);
     return 0;
 }
@@ -227,6 +194,9 @@ int main(int argc, const char * argv[]) {
 
 int main(){
     Mat image_in = imread("./images/lena.jpg", 0);
+    imshow("img1",image_in);
+
+    if(waitKey()==27){break;}
     return 0;
 }
 #endif

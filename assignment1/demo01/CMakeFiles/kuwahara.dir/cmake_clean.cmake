@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/kuwahara.dir/src/main.cpp.o"
+  "CMakeFiles/kuwahara.dir/src/main-Y.cpp.o"
   "kuwahara"
   "kuwahara.pdb"
 )

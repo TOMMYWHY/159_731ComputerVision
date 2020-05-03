@@ -57,27 +57,27 @@ include CMakeFiles/opencv_demo.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/opencv_demo.dir/flags.make
 
-CMakeFiles/opencv_demo.dir/week03/main.cpp.o: CMakeFiles/opencv_demo.dir/flags.make
-CMakeFiles/opencv_demo.dir/week03/main.cpp.o: week03/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/opencv_demo.dir/week03/main.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/opencv_demo.dir/week03/main.cpp.o -c /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/week03/main.cpp
+CMakeFiles/opencv_demo.dir/week04/main.cpp.o: CMakeFiles/opencv_demo.dir/flags.make
+CMakeFiles/opencv_demo.dir/week04/main.cpp.o: week04/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/opencv_demo.dir/week04/main.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/opencv_demo.dir/week04/main.cpp.o -c /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/week04/main.cpp
 
-CMakeFiles/opencv_demo.dir/week03/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/opencv_demo.dir/week03/main.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/week03/main.cpp > CMakeFiles/opencv_demo.dir/week03/main.cpp.i
+CMakeFiles/opencv_demo.dir/week04/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/opencv_demo.dir/week04/main.cpp.i"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/week04/main.cpp > CMakeFiles/opencv_demo.dir/week04/main.cpp.i
 
-CMakeFiles/opencv_demo.dir/week03/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/opencv_demo.dir/week03/main.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/week03/main.cpp -o CMakeFiles/opencv_demo.dir/week03/main.cpp.s
+CMakeFiles/opencv_demo.dir/week04/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/opencv_demo.dir/week04/main.cpp.s"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/demo/demo01/week04/main.cpp -o CMakeFiles/opencv_demo.dir/week04/main.cpp.s
 
 # Object files for target opencv_demo
 opencv_demo_OBJECTS = \
-"CMakeFiles/opencv_demo.dir/week03/main.cpp.o"
+"CMakeFiles/opencv_demo.dir/week04/main.cpp.o"
 
 # External object files for target opencv_demo
 opencv_demo_EXTERNAL_OBJECTS =
 
-opencv_demo: CMakeFiles/opencv_demo.dir/week03/main.cpp.o
+opencv_demo: CMakeFiles/opencv_demo.dir/week04/main.cpp.o
 opencv_demo: CMakeFiles/opencv_demo.dir/build.make
 opencv_demo: /usr/local/lib/libopencv_gapi.4.2.0.dylib
 opencv_demo: /usr/local/lib/libopencv_stitching.4.2.0.dylib

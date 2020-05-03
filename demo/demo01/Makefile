@@ -123,32 +123,32 @@ opencv_demo/fast:
 	$(MAKE) -f CMakeFiles/opencv_demo.dir/build.make CMakeFiles/opencv_demo.dir/build
 .PHONY : opencv_demo/fast
 
-week03/main.o: week03/main.cpp.o
+week04/main.o: week04/main.cpp.o
 
-.PHONY : week03/main.o
+.PHONY : week04/main.o
 
 # target to build an object file
-week03/main.cpp.o:
-	$(MAKE) -f CMakeFiles/opencv_demo.dir/build.make CMakeFiles/opencv_demo.dir/week03/main.cpp.o
-.PHONY : week03/main.cpp.o
+week04/main.cpp.o:
+	$(MAKE) -f CMakeFiles/opencv_demo.dir/build.make CMakeFiles/opencv_demo.dir/week04/main.cpp.o
+.PHONY : week04/main.cpp.o
 
-week03/main.i: week03/main.cpp.i
+week04/main.i: week04/main.cpp.i
 
-.PHONY : week03/main.i
+.PHONY : week04/main.i
 
 # target to preprocess a source file
-week03/main.cpp.i:
-	$(MAKE) -f CMakeFiles/opencv_demo.dir/build.make CMakeFiles/opencv_demo.dir/week03/main.cpp.i
-.PHONY : week03/main.cpp.i
+week04/main.cpp.i:
+	$(MAKE) -f CMakeFiles/opencv_demo.dir/build.make CMakeFiles/opencv_demo.dir/week04/main.cpp.i
+.PHONY : week04/main.cpp.i
 
-week03/main.s: week03/main.cpp.s
+week04/main.s: week04/main.cpp.s
 
-.PHONY : week03/main.s
+.PHONY : week04/main.s
 
 # target to generate assembly for a file
-week03/main.cpp.s:
-	$(MAKE) -f CMakeFiles/opencv_demo.dir/build.make CMakeFiles/opencv_demo.dir/week03/main.cpp.s
-.PHONY : week03/main.cpp.s
+week04/main.cpp.s:
+	$(MAKE) -f CMakeFiles/opencv_demo.dir/build.make CMakeFiles/opencv_demo.dir/week04/main.cpp.s
+.PHONY : week04/main.cpp.s
 
 # Help Target
 help:
@@ -159,9 +159,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... opencv_demo"
-	@echo "... week03/main.o"
-	@echo "... week03/main.i"
-	@echo "... week03/main.s"
+	@echo "... week04/main.o"
+	@echo "... week04/main.i"
+	@echo "... week04/main.s"
 .PHONY : help
 
 

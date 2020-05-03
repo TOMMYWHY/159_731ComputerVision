@@ -6,7 +6,7 @@
 	<integer>10</integer>
 	<key>logs</key>
 	<dict>
-		<key>4EEC4AB6-1953-4CC3-AF41-631B791D6265</key>
+		<key>3828AD4C-3DAF-4FF0-B0AD-B018D60F6F9B</key>
 		<dict>
 			<key>className</key>
 			<string>IDEActivityLogSection</string>
@@ -15,7 +15,7 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>4EEC4AB6-1953-4CC3-AF41-631B791D6265.xcactivitylog</string>
+			<string>3828AD4C-3DAF-4FF0-B0AD-B018D60F6F9B.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
@@ -32,13 +32,81 @@
 			<key>signature</key>
 			<string>Build opengcv_demo</string>
 			<key>timeStartedRecording</key>
-			<real>608463506.40239704</real>
+			<real>609388705.18645799</real>
 			<key>timeStoppedRecording</key>
-			<real>608463509.66380703</real>
+			<real>609388709.17999101</real>
 			<key>title</key>
 			<string>Build opengcv_demo</string>
 			<key>uniqueIdentifier</key>
-			<string>4EEC4AB6-1953-4CC3-AF41-631B791D6265</string>
+			<string>3828AD4C-3DAF-4FF0-B0AD-B018D60F6F9B</string>
+		</dict>
+		<key>A06929D9-957B-467C-8AD7-CFC097B7ADE1</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>A06929D9-957B-467C-8AD7-CFC097B7ADE1.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>opengcv_demo project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>opengcv_demo</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build opengcv_demo</string>
+			<key>timeStartedRecording</key>
+			<real>608899318.29553699</real>
+			<key>timeStoppedRecording</key>
+			<real>608899321.52972198</real>
+			<key>title</key>
+			<string>Build opengcv_demo</string>
+			<key>uniqueIdentifier</key>
+			<string>A06929D9-957B-467C-8AD7-CFC097B7ADE1</string>
+		</dict>
+		<key>A161860B-CF0D-482B-9A5F-FED8CE50DAC2</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>A161860B-CF0D-482B-9A5F-FED8CE50DAC2.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>opengcv_demo project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>opengcv_demo</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build opengcv_demo</string>
+			<key>timeStartedRecording</key>
+			<real>609388659.15225899</real>
+			<key>timeStoppedRecording</key>
+			<real>609388659.40138197</real>
+			<key>title</key>
+			<string>Build opengcv_demo</string>
+			<key>uniqueIdentifier</key>
+			<string>A161860B-CF0D-482B-9A5F-FED8CE50DAC2</string>
 		</dict>
 	</dict>
 </dict>
