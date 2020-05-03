@@ -17,6 +17,12 @@ decoding.h
 /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/src/decoding.h
 math.h
 -
+iostream
+-
+stdlib.h
+-
+stdio.h
+-
 
 /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/calib3d.hpp
 opencv2/core.hpp
