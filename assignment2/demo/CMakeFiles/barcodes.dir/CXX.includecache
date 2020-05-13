@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/src/main.cpp
+/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/src/demo.cpp
 iostream
 -
 opencv2/opencv.hpp

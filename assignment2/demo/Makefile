@@ -123,32 +123,32 @@ barcodes/fast:
 	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/build
 .PHONY : barcodes/fast
 
-src/main.o: src/main.cpp.o
+src/demo.o: src/demo.cpp.o
 
-.PHONY : src/main.o
+.PHONY : src/demo.o
 
 # target to build an object file
-src/main.cpp.o:
-	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/src/main.cpp.o
-.PHONY : src/main.cpp.o
+src/demo.cpp.o:
+	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/src/demo.cpp.o
+.PHONY : src/demo.cpp.o
 
-src/main.i: src/main.cpp.i
+src/demo.i: src/demo.cpp.i
 
-.PHONY : src/main.i
+.PHONY : src/demo.i
 
 # target to preprocess a source file
-src/main.cpp.i:
-	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/src/main.cpp.i
-.PHONY : src/main.cpp.i
+src/demo.cpp.i:
+	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/src/demo.cpp.i
+.PHONY : src/demo.cpp.i
 
-src/main.s: src/main.cpp.s
+src/demo.s: src/demo.cpp.s
 
-.PHONY : src/main.s
+.PHONY : src/demo.s
 
 # target to generate assembly for a file
-src/main.cpp.s:
-	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/src/main.cpp.s
-.PHONY : src/main.cpp.s
+src/demo.cpp.s:
+	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/src/demo.cpp.s
+.PHONY : src/demo.cpp.s
 
 # Help Target
 help:
@@ -159,9 +159,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... barcodes"
-	@echo "... src/main.o"
-	@echo "... src/main.i"
-	@echo "... src/main.s"
+	@echo "... src/demo.o"
+	@echo "... src/demo.i"
+	@echo "... src/demo.s"
 .PHONY : help
 
 

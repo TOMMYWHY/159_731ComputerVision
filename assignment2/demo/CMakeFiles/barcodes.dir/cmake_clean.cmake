@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/barcodes.dir/src/main.cpp.o"
+  "CMakeFiles/barcodes.dir/src/demo.cpp.o"
   "barcodes"
   "barcodes.pdb"
 )

@@ -17,7 +17,8 @@ source_group("Headers" FILES ${PROJECT_HEADERS})
 #
 
 
-set(SOURCE_FILES src/main.cpp)
+#set(SOURCE_FILES src/main.cpp)
+set(SOURCE_FILES src/demo.cpp)
 
 
 

@@ -57,27 +57,27 @@ include CMakeFiles/barcodes.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/barcodes.dir/flags.make
 
-CMakeFiles/barcodes.dir/src/main.cpp.o: CMakeFiles/barcodes.dir/flags.make
-CMakeFiles/barcodes.dir/src/main.cpp.o: src/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/barcodes.dir/src/main.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/barcodes.dir/src/main.cpp.o -c /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/src/main.cpp
+CMakeFiles/barcodes.dir/src/demo.cpp.o: CMakeFiles/barcodes.dir/flags.make
+CMakeFiles/barcodes.dir/src/demo.cpp.o: src/demo.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/barcodes.dir/src/demo.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/barcodes.dir/src/demo.cpp.o -c /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/src/demo.cpp
 
-CMakeFiles/barcodes.dir/src/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/barcodes.dir/src/main.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/src/main.cpp > CMakeFiles/barcodes.dir/src/main.cpp.i
+CMakeFiles/barcodes.dir/src/demo.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/barcodes.dir/src/demo.cpp.i"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/src/demo.cpp > CMakeFiles/barcodes.dir/src/demo.cpp.i
 
-CMakeFiles/barcodes.dir/src/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/barcodes.dir/src/main.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/src/main.cpp -o CMakeFiles/barcodes.dir/src/main.cpp.s
+CMakeFiles/barcodes.dir/src/demo.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/barcodes.dir/src/demo.cpp.s"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/src/demo.cpp -o CMakeFiles/barcodes.dir/src/demo.cpp.s
 
 # Object files for target barcodes
 barcodes_OBJECTS = \
-"CMakeFiles/barcodes.dir/src/main.cpp.o"
+"CMakeFiles/barcodes.dir/src/demo.cpp.o"
 
 # External object files for target barcodes
 barcodes_EXTERNAL_OBJECTS =
 
-barcodes: CMakeFiles/barcodes.dir/src/main.cpp.o
+barcodes: CMakeFiles/barcodes.dir/src/demo.cpp.o
 barcodes: CMakeFiles/barcodes.dir/build.make
 barcodes: /usr/local/lib/libopencv_gapi.4.2.0.dylib
 barcodes: /usr/local/lib/libopencv_stitching.4.2.0.dylib
