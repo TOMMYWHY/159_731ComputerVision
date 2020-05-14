@@ -69,8 +69,8 @@ int right_angle_points(vector<Point2f> points_3 ){
 #if 01
 int main (int argc, char* argv[]){
     Mat emp_img = imread("./images/2Dempty.jpg",1);
-    Mat input_img = imread("./images/abcde_rotated.jpg",1);
-//    Mat input_img = imread("./images/congratulations_rotated_scaled.jpg",1);
+//    Mat input_img = imread("./images/abcde_rotated.jpg",1);
+    Mat input_img = imread("./images/congratulations_rotated_scaled.jpg",1);
     imshow("input_img",input_img);
 
 //    调正input
@@ -104,7 +104,7 @@ int main (int argc, char* argv[]){
     line(emp_img, dstTri[2],dstTri[0], Scalar(0,0,255), 3);
 
 /*找直角索引*/
-    //  已摆正
+ //  已摆正
     int empty_right_angle=  right_angle_points(emp_circles);
     cout << "wocao, empty right-angle point is : "<<empty_right_angle  << endl;
 //    int input_right_angle =  right_angle_points(input_circles);//
@@ -115,6 +115,22 @@ int main (int argc, char* argv[]){
     int img_width = input_img.cols;
     int empty_img_height = emp_img.rows;
     int empty_img_width = emp_img.cols;
+
+/*testing  计算正弦值 */
+
+/*    double k1 = (srcTri[input_right_angle].y - img_height/2.0) /(srcTri[input_right_angle].x - img_width/2.0) ;
+    double k2 = (dstTri[empty_right_angle].y - empty_img_height/2.0) /(dstTri[empty_right_angle].x - empty_img_width/2.0) ; //??/
+    double adjust_degree =atan(k1)*180/M_PI  - atan(k2)*180/M_PI;
+    cout << "degree:"<<adjust_degree<<endl;
+
+    Mat turn_up_img;
+    cv::Point2f center(static_cast<float>(input_img.cols / 2.), static_cast<float>(input_img.rows / 2.));
+    cv::Mat rot_mat = cv::getRotationMatrix2D(center, adjust_degree, 1.0);
+    cv::warpAffine(input_img, turn_up_img, rot_mat, Size(input_img.cols, input_img.rows), cv::INTER_LINEAR, cv::BORDER_REPLICATE);
+    imshow("input_img",input_img);
+    imshow("temp",turn_up_img);*/
+
+
 
 /*调正后图片直角点坐标*/
 
@@ -134,10 +150,10 @@ int main (int argc, char* argv[]){
     }
     dis = sqrtf(dis);
     cout << "dis:"<<dis<<endl;
-
 /*旋转90度倍数*/
+
     int angle=0; //滚动角度
-    if(turn_up_Tri[turn_up_right_angle].x < dis && turn_up_Tri[turn_up_right_angle].y> dis){
+    if(turn_up_Tri[turn_up_right_angle].x < dis && turn_up_Tri[turn_up_right_angle].y>dis){
         cout << "正图"<<endl;
         angle = angle +0;
     }else if(turn_up_Tri[turn_up_right_angle].x < dis && turn_up_Tri[turn_up_right_angle].y < dis){
@@ -159,34 +175,13 @@ int main (int argc, char* argv[]){
 
 
 
-//=============颜色 阈值化==================
-    Mat input_threshold ;
-    input_threshold.create(dst_img.size(),CV_8UC3);
-    Vec3b new_pixel_pre;
-    for (int x=0;x<dst_img.cols;x++){
-        for ( int y=0;y<dst_img.rows ; y++) {
-            Vec3b pixel_image = dst_img.at<Vec3b>(y, x);
-            Vec3b pixel_image2 = dst_img.at<Vec3b>(y, x);
-
-            pixel_image2[0]=pixel_image[0] >128 ? 255:0;
-            pixel_image2[1]=pixel_image[1] >128 ? 255:0;
-            pixel_image2[2]=pixel_image[2] >128 ? 255:0;
-            input_threshold.at<Vec3b>(y,x)=pixel_image2; // 颜色校正
-
-        }
-    }
-    imshow("input_threshold",input_threshold);
-
-
-
-
-//    =============找位置==================
 
 
 
 
 
-//    imshow("emp_img",emp_img);
+
+    imshow("emp_img",emp_img);
 //    imshow("input_img",input_img);
 //    imshow("warp_dst",warp_dst);
 //    imshow("input_adjust",input_adjust);

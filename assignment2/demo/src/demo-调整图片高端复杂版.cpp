@@ -69,75 +69,65 @@ int right_angle_points(vector<Point2f> points_3 ){
 #if 01
 int main (int argc, char* argv[]){
     Mat emp_img = imread("./images/2Dempty.jpg",1);
-    Mat input_img = imread("./images/abcde_rotated.jpg",1);
-//    Mat input_img = imread("./images/congratulations_rotated_scaled.jpg",1);
-    imshow("input_img",input_img);
-
-//    调正input
-    Mat input_binary_img , input_alignment;
-    int th1 = 50,th2=150,maxLineGap=10;
-    Canny(input_img, input_binary_img, 50,100,3);
-
-    vector<Vec4i> plines;
-    HoughLinesP(input_binary_img, plines, 1, CV_PI/180,th1,th2,maxLineGap);
-    Scalar color = Scalar(0, 0, 255);
-
-    input_img.copyTo(input_alignment);
-
-    double degree_alignment;
-    float k =(float) ( plines[0][3]- plines[0][1]) /( plines[0][2]- plines[0][0]);
-    degree_alignment =atan(k)*180/M_PI;
-    cout <<degree_alignment <<endl;
-    cv::Point2f input_center(static_cast<float>(input_img.cols / 2.), static_cast<float>(input_img.rows / 2.));
-    cv::Mat rot_alignment = cv::getRotationMatrix2D(input_center, degree_alignment, 1.0);
-    cv::warpAffine(input_img, input_alignment, rot_alignment, Size(input_img.cols, input_img.rows), cv::INTER_LINEAR, cv::BORDER_REPLICATE);
-    imshow("input_alignment",input_alignment);
-
+//    Mat input_img = imread("./images/abcde_rotated.jpg",1);
+    Mat input_img = imread("./images/congratulations_rotated_scaled.jpg",1);
 
 
     vector<Point2f> emp_circles = find_points(emp_img);
-/*找到三个点位置*/
+    vector<Point2f> input_circles = find_points(input_img);
+
+    /*找到三个点位置*/
+    Point2f srcTri[3] ={input_circles[0],input_circles[1],input_circles[2]};; //input
     Point2f dstTri[3] = {emp_circles[0],emp_circles[1],emp_circles[2]}; //empty
 
     line(emp_img, dstTri[0],dstTri[1], Scalar(0,0,255), 3);
     line(emp_img, dstTri[1],dstTri[2], Scalar(0,0,255), 3);
     line(emp_img, dstTri[2],dstTri[0], Scalar(0,0,255), 3);
 
-/*找直角索引*/
-    //  已摆正
+    /*找直角索引*/ //  未摆正
     int empty_right_angle=  right_angle_points(emp_circles);
     cout << "wocao, empty right-angle point is : "<<empty_right_angle  << endl;
-//    int input_right_angle =  right_angle_points(input_circles);//
-//    cout << "wocao, input right-angle point is : "<<input_right_angle  << endl;
+    int input_right_angle =  right_angle_points(input_circles);//
+    cout << "wocao, input right-angle point is : "<<input_right_angle  << endl;
 
-/*两张图片的中心点*/
+    /*两张图片的中心点*/
     int img_height = input_img.rows;
     int img_width = input_img.cols;
     int empty_img_height = emp_img.rows;
     int empty_img_width = emp_img.cols;
 
-/*调正后图片直角点坐标*/
+    /*testing  计算正弦值 */
+    double k1 = (srcTri[input_right_angle].y - img_height/2.0) /(srcTri[input_right_angle].x - img_width/2.0) ;
+    double k2 = (dstTri[empty_right_angle].y - empty_img_height/2.0) /(dstTri[empty_right_angle].x - empty_img_width/2.0) ; //??/
+    double adjust_degree =atan(k1)*180/M_PI  - atan(k2)*180/M_PI;
+    cout << "degree:"<<adjust_degree<<endl;
 
-    vector<Point2f> turn_up_circles = find_points(input_alignment);
-    int turn_up_right_angle=  right_angle_points(turn_up_circles);
-    Point2f turn_up_Tri[3] = {turn_up_circles[0],turn_up_circles[1],turn_up_circles[2]}; //empty
-    cout << "turn_up_right_angle:"<<turn_up_Tri[turn_up_right_angle]<<endl;
+    Mat turn_up_img;
+    cv::Point2f center(static_cast<float>(input_img.cols / 2.), static_cast<float>(input_img.rows / 2.));
+    cv::Mat rot_mat = cv::getRotationMatrix2D(center, adjust_degree, 1.0);
+    cv::warpAffine(input_img, turn_up_img, rot_mat, Size(input_img.cols, input_img.rows), cv::INTER_LINEAR, cv::BORDER_REPLICATE);
+    imshow("input_img",input_img);
+    imshow("temp",turn_up_img);
 
     /*计算直角边距离*/
-    Point2f srcTri[3] ={turn_up_circles[0],turn_up_circles[1],turn_up_circles[2]};; //input
-
     float dis;
-    if(turn_up_right_angle!=0){
-        dis = powf((srcTri[turn_up_right_angle].x - srcTri[0].x),2) + powf((srcTri[turn_up_right_angle].y - srcTri[0].y),2);
+    if(input_right_angle!=0){
+        dis = powf((srcTri[input_right_angle].x - srcTri[0].x),2) + powf((srcTri[input_right_angle].y - srcTri[0].y),2);
     }else{
-        dis = powf((srcTri[turn_up_right_angle].x - srcTri[1].x),2) + powf((srcTri[turn_up_right_angle].y - srcTri[1].y),2);
+        dis = powf((srcTri[input_right_angle].x - srcTri[1].x),2) + powf((srcTri[input_right_angle].y - srcTri[1].y),2);
     }
     dis = sqrtf(dis);
     cout << "dis:"<<dis<<endl;
 
-/*旋转90度倍数*/
+    /*调正后图片直角点坐标*/
+    vector<Point2f> turn_up_circles = find_points(turn_up_img);
+    int turn_up_right_angle=  right_angle_points(turn_up_circles);
+    Point2f turn_up_Tri[3] = {turn_up_circles[0],turn_up_circles[1],turn_up_circles[2]}; //empty
+    cout << "turn_up_right_angle:"<<turn_up_Tri[turn_up_right_angle]<<endl;
+
+    /*旋转90度倍数*/
     int angle=0; //滚动角度
-    if(turn_up_Tri[turn_up_right_angle].x < dis && turn_up_Tri[turn_up_right_angle].y> dis){
+    if(turn_up_Tri[turn_up_right_angle].x < dis && turn_up_Tri[turn_up_right_angle].y<dis){
         cout << "正图"<<endl;
         angle = angle +0;
     }else if(turn_up_Tri[turn_up_right_angle].x < dis && turn_up_Tri[turn_up_right_angle].y < dis){
@@ -151,42 +141,20 @@ int main (int argc, char* argv[]){
         angle = angle +270;
     }
     Mat dst_img;
-    cv::Point2f center(static_cast<float>(input_alignment.cols / 2.), static_cast<float>(input_alignment.rows / 2.));
     Mat M = getRotationMatrix2D(center,angle,1);//计算旋转的仿射变换矩阵
 //    warpAffine(turn_up_img,dst_img,M,Size(turn_up_img.cols,turn_up_img.rows));//仿射变换
-    cv::warpAffine(input_alignment, dst_img, M, Size(input_img.cols, input_img.rows), cv::INTER_LINEAR, cv::BORDER_REPLICATE);
+    cv::warpAffine(turn_up_img, dst_img, M, Size(input_img.cols, input_img.rows), cv::INTER_LINEAR, cv::BORDER_REPLICATE);
     imshow("dst_img",dst_img);
 
 
 
-//=============颜色 阈值化==================
-    Mat input_threshold ;
-    input_threshold.create(dst_img.size(),CV_8UC3);
-    Vec3b new_pixel_pre;
-    for (int x=0;x<dst_img.cols;x++){
-        for ( int y=0;y<dst_img.rows ; y++) {
-            Vec3b pixel_image = dst_img.at<Vec3b>(y, x);
-            Vec3b pixel_image2 = dst_img.at<Vec3b>(y, x);
-
-            pixel_image2[0]=pixel_image[0] >128 ? 255:0;
-            pixel_image2[1]=pixel_image[1] >128 ? 255:0;
-            pixel_image2[2]=pixel_image[2] >128 ? 255:0;
-            input_threshold.at<Vec3b>(y,x)=pixel_image2; // 颜色校正
-
-        }
-    }
-    imshow("input_threshold",input_threshold);
-
-
-
-
-//    =============找位置==================
 
 
 
 
 
-//    imshow("emp_img",emp_img);
+
+    imshow("emp_img",emp_img);
 //    imshow("input_img",input_img);
 //    imshow("warp_dst",warp_dst);
 //    imshow("input_adjust",input_adjust);
