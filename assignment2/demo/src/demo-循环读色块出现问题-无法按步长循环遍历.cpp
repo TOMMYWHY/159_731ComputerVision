@@ -68,6 +68,7 @@ int right_angle_points(vector<Point2f> points_3 ){
 //    return right_angle;
     return right_angle_index;
 }
+
 /*将图片调正*/
 Mat fine_tuning(Mat input_img){
     Mat input_binary_img , input_alignment;
@@ -94,18 +95,21 @@ Mat fine_tuning(Mat input_img){
 #if 0001
 int main (int argc, char* argv[]){
     Mat emp_img = imread("./images/2Dempty.jpg",1);
-//    Mat input_img = imread("./images/abcde_rotated.jpg",1);
+    Mat input_img = imread("./images/abcde_rotated.jpg",1);
 //    Mat input_img = imread("./images/congratulations_rotated_scaled.jpg",1);
-    Mat input_img = imread("./images/Darwin_rotated_scaled.jpg",1);
     imshow("input_img",input_img);
 
 //    调正input
     Mat input_alignment = fine_tuning(input_img);
 
-    // 找到空图点位置
+
     vector<Point2f> emp_circles = find_points(emp_img);
 /*找到三个点位置*/
     Point2f dstTri[3] = {emp_circles[0],emp_circles[1],emp_circles[2]}; //empty
+    /*line(emp_img, dstTri[0],dstTri[1], Scalar(0,0,255), 3);
+    line(emp_img, dstTri[1],dstTri[2], Scalar(0,0,255), 3);
+    line(emp_img, dstTri[2],dstTri[0], Scalar(0,0,255), 3);*/
+
 /*找直角索引*/
     //  已摆正
     int empty_right_angle=  right_angle_points(emp_circles);
@@ -117,46 +121,45 @@ int main (int argc, char* argv[]){
     int empty_img_height = emp_img.rows;
     int empty_img_width = emp_img.cols;
 
-/*调正后图片直角点坐标 在1号位*/
+/*调正后图片直角点坐标*/
     vector<Point2f> turn_up_circles = find_points(input_alignment);
     int turn_up_right_angle=  right_angle_points(turn_up_circles);
-    Point2f turn_up_Tri[3] = {turn_up_circles[0],turn_up_circles[1],turn_up_circles[2]};
+    Point2f turn_up_Tri[3] = {turn_up_circles[0],turn_up_circles[1],turn_up_circles[2]}; //empty
     cout << "turn_up_right_angle:"<<turn_up_Tri[turn_up_right_angle]<<endl;
-    vector<Point2f> turn_up_Points = {turn_up_circles[0],turn_up_circles[1],turn_up_circles[2]}; // 无序点
-    cout << "-------inputPoints ------ : "<<turn_up_Points << endl;
-    cout << "-------turn_up_right_angle ------ : "<<turn_up_right_angle << endl;
-    turn_up_Points.erase(turn_up_Points.begin()+turn_up_right_angle); // 删除直角点
-    vector<Point2f> new_turn_up_points_vec;
-    cout << "-------after erase  inputPoints ------ : "<<turn_up_Points << endl;
-    turn_up_Points.insert(turn_up_Points.begin()+1, turn_up_Tri[turn_up_right_angle]);
-    cout << "-------after insert  inputPoints ------ : "<<turn_up_Points << endl; // 此时 中心为直角点
-    cout << "===========: "<< endl;
-    double emp_dis = sqrt(powf((emp_circles[1].x - emp_circles[0].x),2) + powf((emp_circles[1].y - emp_circles[0].y),2));
-    double input_dis = sqrt(powf((turn_up_Points[1].x - turn_up_Points[0].x),2) + powf((turn_up_Points[1].y - turn_up_Points[0].y),2));
-    cout << "emp_dis: "<<emp_dis << endl;
-    cout << "input_dis: "<<input_dis << endl;
 
-    /*通过 点积求 两个向量theta 确定 0号 与 2号*/
-    Vec2f p_i_0(turn_up_Points[0].x, -turn_up_Points[0].y), p_i_1(turn_up_Points[1].x, -turn_up_Points[1].y),p_i_2(turn_up_Points[2].x,-turn_up_Points[2].y);
-    Vec2f p_e_0(emp_circles[0].x, -emp_circles[0].y), p_e_1(emp_circles[1].x, -emp_circles[1].y),p_e_2(emp_circles[2].x,-emp_circles[2].y);
-    Vec2f i_p1_p0 = p_i_0 - p_i_1;
-    Vec2f e_p1_p0 = p_e_0 - p_e_1;
-    cout << "p1_p0: "<<i_p1_p0<<endl;
-    cout << "p2_p0: "<<e_p1_p0<<endl;
-    double cos_theta =abs( i_p1_p0.dot(e_p1_p0)/ (emp_dis * input_dis) );
-    cout << "cos_theta: " << cos_theta<< endl;
-    /*如果 cos_theta  不等于1 则交换两点*/
-    if(cos_theta != 1 ){
-        swap(turn_up_Points[0],turn_up_Points[2] );
+    /*计算直角边距离*/
+    Point2f srcTri[3] ={turn_up_circles[0],turn_up_circles[1],turn_up_circles[2]};; //input
+
+    float dis;
+    if(turn_up_right_angle!=0){
+        dis = powf((srcTri[turn_up_right_angle].x - srcTri[0].x),2) + powf((srcTri[turn_up_right_angle].y - srcTri[0].y),2);
+    }else{
+        dis = powf((srcTri[turn_up_right_angle].x - srcTri[1].x),2) + powf((srcTri[turn_up_right_angle].y - srcTri[1].y),2);
     }
-    cout << "-------turn_up_Points------ : "<<turn_up_Points << endl; // 此时 中心为直角点
-    Point2f new_input_position[3] ={turn_up_Points[0],turn_up_Points[1],turn_up_Points[2]}; //转成 数组 todo 尝试 向量
+    dis = sqrtf(dis);
+    cout << "dis:"<<dis<<endl;
+
+/*旋转90度倍数*/
+    int angle=0; //滚动角度
+    if(turn_up_Tri[turn_up_right_angle].x < dis && turn_up_Tri[turn_up_right_angle].y> dis){
+        cout << "正图"<<endl;
+        angle = angle +0;
+    }else if(turn_up_Tri[turn_up_right_angle].x < dis && turn_up_Tri[turn_up_right_angle].y < dis){
+        cout << "转90"<<endl;
+        angle = angle +90;
+    }else if(turn_up_Tri[turn_up_right_angle].x > dis && turn_up_Tri[turn_up_right_angle].y <dis){
+        cout << "转180"<<endl;
+        angle = angle +180;
+    }else if(turn_up_Tri[turn_up_right_angle].x > dis && turn_up_Tri[turn_up_right_angle].y > dis){
+        cout << "转270"<<endl;
+        angle = angle +270;
+    }
     Mat dst_img;
-    Mat rotate_Mat = getAffineTransform( new_input_position, dstTri  );
-    cv::warpAffine(input_alignment, dst_img, rotate_Mat, Size(input_img.cols, input_img.rows), cv::INTER_LINEAR, cv::BORDER_REPLICATE);
+    cv::Point2f center(static_cast<float>(input_alignment.cols / 2.), static_cast<float>(input_alignment.rows / 2.));
+    Mat M = getRotationMatrix2D(center,angle,1);//计算旋转的仿射变换矩阵
+//    warpAffine(turn_up_img,dst_img,M,Size(turn_up_img.cols,turn_up_img.rows));//仿射变换
+    cv::warpAffine(input_alignment, dst_img, M, Size(input_img.cols, input_img.rows), cv::INTER_LINEAR, cv::BORDER_REPLICATE);
     imshow("dst_img",dst_img);
-
-
 
 
 

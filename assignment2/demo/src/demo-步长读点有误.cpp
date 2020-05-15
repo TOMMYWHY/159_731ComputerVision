@@ -68,6 +68,7 @@ int right_angle_points(vector<Point2f> points_3 ){
 //    return right_angle;
     return right_angle_index;
 }
+
 /*将图片调正*/
 Mat fine_tuning(Mat input_img){
     Mat input_binary_img , input_alignment;
@@ -91,21 +92,24 @@ Mat fine_tuning(Mat input_img){
     return input_alignment;
 }
 
-#if 0001
+#if 001
 int main (int argc, char* argv[]){
     Mat emp_img = imread("./images/2Dempty.jpg",1);
-//    Mat input_img = imread("./images/abcde_rotated.jpg",1);
+    Mat input_img = imread("./images/abcde_rotated.jpg",1);
 //    Mat input_img = imread("./images/congratulations_rotated_scaled.jpg",1);
-    Mat input_img = imread("./images/Darwin_rotated_scaled.jpg",1);
     imshow("input_img",input_img);
 
 //    调正input
     Mat input_alignment = fine_tuning(input_img);
 
-    // 找到空图点位置
+
     vector<Point2f> emp_circles = find_points(emp_img);
 /*找到三个点位置*/
     Point2f dstTri[3] = {emp_circles[0],emp_circles[1],emp_circles[2]}; //empty
+    /*line(emp_img, dstTri[0],dstTri[1], Scalar(0,0,255), 3);
+    line(emp_img, dstTri[1],dstTri[2], Scalar(0,0,255), 3);
+    line(emp_img, dstTri[2],dstTri[0], Scalar(0,0,255), 3);*/
+
 /*找直角索引*/
     //  已摆正
     int empty_right_angle=  right_angle_points(emp_circles);
@@ -117,46 +121,45 @@ int main (int argc, char* argv[]){
     int empty_img_height = emp_img.rows;
     int empty_img_width = emp_img.cols;
 
-/*调正后图片直角点坐标 在1号位*/
+/*调正后图片直角点坐标*/
     vector<Point2f> turn_up_circles = find_points(input_alignment);
     int turn_up_right_angle=  right_angle_points(turn_up_circles);
-    Point2f turn_up_Tri[3] = {turn_up_circles[0],turn_up_circles[1],turn_up_circles[2]};
+    Point2f turn_up_Tri[3] = {turn_up_circles[0],turn_up_circles[1],turn_up_circles[2]}; //empty
     cout << "turn_up_right_angle:"<<turn_up_Tri[turn_up_right_angle]<<endl;
-    vector<Point2f> turn_up_Points = {turn_up_circles[0],turn_up_circles[1],turn_up_circles[2]}; // 无序点
-    cout << "-------inputPoints ------ : "<<turn_up_Points << endl;
-    cout << "-------turn_up_right_angle ------ : "<<turn_up_right_angle << endl;
-    turn_up_Points.erase(turn_up_Points.begin()+turn_up_right_angle); // 删除直角点
-    vector<Point2f> new_turn_up_points_vec;
-    cout << "-------after erase  inputPoints ------ : "<<turn_up_Points << endl;
-    turn_up_Points.insert(turn_up_Points.begin()+1, turn_up_Tri[turn_up_right_angle]);
-    cout << "-------after insert  inputPoints ------ : "<<turn_up_Points << endl; // 此时 中心为直角点
-    cout << "===========: "<< endl;
-    double emp_dis = sqrt(powf((emp_circles[1].x - emp_circles[0].x),2) + powf((emp_circles[1].y - emp_circles[0].y),2));
-    double input_dis = sqrt(powf((turn_up_Points[1].x - turn_up_Points[0].x),2) + powf((turn_up_Points[1].y - turn_up_Points[0].y),2));
-    cout << "emp_dis: "<<emp_dis << endl;
-    cout << "input_dis: "<<input_dis << endl;
 
-    /*通过 点积求 两个向量theta 确定 0号 与 2号*/
-    Vec2f p_i_0(turn_up_Points[0].x, -turn_up_Points[0].y), p_i_1(turn_up_Points[1].x, -turn_up_Points[1].y),p_i_2(turn_up_Points[2].x,-turn_up_Points[2].y);
-    Vec2f p_e_0(emp_circles[0].x, -emp_circles[0].y), p_e_1(emp_circles[1].x, -emp_circles[1].y),p_e_2(emp_circles[2].x,-emp_circles[2].y);
-    Vec2f i_p1_p0 = p_i_0 - p_i_1;
-    Vec2f e_p1_p0 = p_e_0 - p_e_1;
-    cout << "p1_p0: "<<i_p1_p0<<endl;
-    cout << "p2_p0: "<<e_p1_p0<<endl;
-    double cos_theta =abs( i_p1_p0.dot(e_p1_p0)/ (emp_dis * input_dis) );
-    cout << "cos_theta: " << cos_theta<< endl;
-    /*如果 cos_theta  不等于1 则交换两点*/
-    if(cos_theta != 1 ){
-        swap(turn_up_Points[0],turn_up_Points[2] );
+    /*计算直角边距离*/
+    Point2f srcTri[3] ={turn_up_circles[0],turn_up_circles[1],turn_up_circles[2]};; //input
+
+    float dis;
+    if(turn_up_right_angle!=0){
+        dis = powf((srcTri[turn_up_right_angle].x - srcTri[0].x),2) + powf((srcTri[turn_up_right_angle].y - srcTri[0].y),2);
+    }else{
+        dis = powf((srcTri[turn_up_right_angle].x - srcTri[1].x),2) + powf((srcTri[turn_up_right_angle].y - srcTri[1].y),2);
     }
-    cout << "-------turn_up_Points------ : "<<turn_up_Points << endl; // 此时 中心为直角点
-    Point2f new_input_position[3] ={turn_up_Points[0],turn_up_Points[1],turn_up_Points[2]}; //转成 数组 todo 尝试 向量
+    dis = sqrtf(dis);
+    cout << "dis:"<<dis<<endl;
+
+/*旋转90度倍数*/
+    int angle=0; //滚动角度
+    if(turn_up_Tri[turn_up_right_angle].x < dis && turn_up_Tri[turn_up_right_angle].y> dis){
+        cout << "正图"<<endl;
+        angle = angle +0;
+    }else if(turn_up_Tri[turn_up_right_angle].x < dis && turn_up_Tri[turn_up_right_angle].y < dis){
+        cout << "转90"<<endl;
+        angle = angle +90;
+    }else if(turn_up_Tri[turn_up_right_angle].x > dis && turn_up_Tri[turn_up_right_angle].y <dis){
+        cout << "转180"<<endl;
+        angle = angle +180;
+    }else if(turn_up_Tri[turn_up_right_angle].x > dis && turn_up_Tri[turn_up_right_angle].y > dis){
+        cout << "转270"<<endl;
+        angle = angle +270;
+    }
     Mat dst_img;
-    Mat rotate_Mat = getAffineTransform( new_input_position, dstTri  );
-    cv::warpAffine(input_alignment, dst_img, rotate_Mat, Size(input_img.cols, input_img.rows), cv::INTER_LINEAR, cv::BORDER_REPLICATE);
+    cv::Point2f center(static_cast<float>(input_alignment.cols / 2.), static_cast<float>(input_alignment.rows / 2.));
+    Mat M = getRotationMatrix2D(center,angle,1);//计算旋转的仿射变换矩阵
+//    warpAffine(turn_up_img,dst_img,M,Size(turn_up_img.cols,turn_up_img.rows));//仿射变换
+    cv::warpAffine(input_alignment, dst_img, M, Size(input_img.cols, input_img.rows), cv::INTER_LINEAR, cv::BORDER_REPLICATE);
     imshow("dst_img",dst_img);
-
-
 
 
 
@@ -180,6 +183,59 @@ int main (int argc, char* argv[]){
 
 
 
+//    =============找位置 感觉不对。 要是这么做 三个圆点位置需要扣掉。。。。==================
+    vector<Point2f> dst_circles = find_points(dst_img);
+    cout << dst_circles<<endl;
+    Point2f left_top_circle = dst_circles[0];
+    int left_top_x;
+    int left_top_y;
+    for (int x=left_top_circle.x; x<input_threshold.cols;x++){
+        Vec3b edge_black = input_threshold.at<Vec3b>(left_top_circle.y, x);
+        if(edge_black[0]== 0 && edge_black[1] ==0 && edge_black[2]==0){
+//            cout << edge_black<<endl;
+//            cout<< x << "," << left_top_circle.y<<endl;
+            left_top_x = x;
+            break;
+        }
+    }
+    for (int y=left_top_circle.y; y>0;y--){
+        Vec3b edge_black = input_threshold.at<Vec3b>(y, left_top_x);
+//        cout << edge_black<<endl;
+        if(edge_black[0]== 255 && edge_black[1] ==255 && edge_black[2]==255){
+//            cout << edge_black<<endl;
+//            cout<< "x,y:"<<left_top_x << ","<< y <<endl;
+            left_top_y = y;
+            break;
+        }
+    }
+    cout<< "x,y:"<<left_top_x << ","<< left_top_y <<endl; // 此处是左上第一个色块左上角
+    int step_size = int ( dis/41);
+    cout << "step_size:"<<step_size<<endl;
+
+    string decode_img ; //todo decode image 有误
+    for (int x=1;x<input_threshold.cols;x = x+step_size){
+        for ( int y=1;y<input_threshold.rows ; y+=step_size) {
+            Vec3b pixel_image = input_threshold.at<Vec3b>(y, x);
+            int b = pixel_image[0];
+            int g = pixel_image[1];
+            int r = pixel_image[2];
+//            cout << "b:" <<b << "; g:" <<g  << "; r:" << r  << endl;
+            b=b>128 ? 1:0;
+            g=g>128 ? 1:0;
+            r=r>128 ? 1:0;
+//            cout << "b:" <<b << "; g:" <<g  << "; r:" << r  << endl;
+
+            string s_b=to_string(b);
+            string s_g=to_string(g);
+            string s_r=to_string(r);
+            string res = s_b+s_g+s_r;
+            cout << "res:"<< res <<endl;
+            decode_img += res;
+        }
+    }
+    cout << decode_img<<endl;
+
+
 
 
 //    imshow("emp_img",emp_img);
@@ -200,7 +256,7 @@ int main (int argc, char* argv[]){
 /*使用findcountours 必须使用empty图， 因为彩色图会出现黑色连接问题。
  * 所以需要 用仿射 将图片旋转至emtpy同一位置，才能使用findcountours。。。。
  * */
-#if 000
+#if 00
 
 RNG rng(12345);
 static double angle( Point pt1, Point pt2, Point pt0 )
@@ -215,9 +271,9 @@ static double angle( Point pt1, Point pt2, Point pt0 )
 
 int main (int argc, char* argv[]){
 //    Mat img = imread("./images/lena.jpg");
-    Mat img = imread("./images/2Dempty.jpg",1);
-//    Mat img = imread("./images/abcde.jpg",1);
-//    Mat img = imread("./images/Darwin_rota ted.jpg",1);
+//    Mat img = imread("./images/2Dempty.jpg",1);
+    Mat img = imread("./images/abcde.jpg",1);
+//    Mat img = imread("./images/Darwin_rotated.jpg",1);
 
 
 
@@ -366,67 +422,22 @@ int main (int argc, char* argv[]){
 #endif
 
 /*轮廓检测 02*/
-#if 000
+#if 00
 
-int iLowH = 50,iHighH=150,iLowS = 50,iHighS=150,iLowV = 50,iHighV=150,g_cannyLowThreshold=50;
+
 int main (int argc, char* argv[]){
-    Mat img = imread("./images/test.jpg");
+    Mat img = imread("./images/lena.jpg");
 //    Mat img = imread("./images/2Dempty.jpg",1);
 //    Mat img = imread("./images/abcde.jpg",1);
 //    Mat img = imread("./images/Darwin_rotated.jpg",1);
 
-    namedWindow("color");
-    createTrackbar("iLowH","color",&iLowH,179);
-    createTrackbar("iHighH","color",&iHighH,179);
-    createTrackbar("iLowS","color",&iLowS,255);
-    createTrackbar("iHighS","color",&iHighS,255);
-    createTrackbar("iLowV","color",&iLowV,255);
-    createTrackbar("iHighV","color",&iHighV,255);
-
-    Mat imgHSV, imgThresholded,imgCanny,element;
-    double length_max=0;
-    vector<Mat> hsvSplit;
-    vector<vector<Point>> contours;
-    cvtColor(img,imgHSV,COLOR_BGR2HSV);
-    inRange(imgHSV, Scalar(iLowH,iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded);
-    element = getStructuringElement(MORPH_RECT,Size(3,3));
-    morphologyEx(imgThresholded,imgThresholded,MORPH_OPEN,element);
-    morphologyEx(imgThresholded,imgThresholded,MORPH_CLOSE,element);
-//    Canny(imgThresholded,imgCanny,g_cannyLowThreshold,g_cannyLowThreshold*3);
-//    Canny(imgThresholded, imgCanny, 50,100,3);
-    findContours(imgThresholded, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
-    int i,k;
-    if(contours.size()>0){
-        k=0;
-        for (int i = 0; i < contours.size(); i++) {
-            if(arcLength(contours[i],0)>length_max){
-                length_max = arcLength(contours[i],0);
-                k=i;
-            }
-        }
-
-        drawContours(img,contours,k,Scalar(0,0,255),4);
-        Point2f vertices[4];
-        Point2f center_box;
-        RotatedRect box = minAreaRect(contours[k]);
-        box.points(vertices);
-        center_box.x = (vertices[0].x+vertices[2].x)/2.0;
-        center_box.y = (vertices[0].y+vertices[2].y)/2.0;
-//        rect_center.push_back(center_box);
-        circle(img,center_box,3,Scalar(0,255,0),-1,8,0);
-        cout <<160-center_box.x<<","<< 120-center_box.y<<endl;
-        cout <<"center_box:"<<center_box<<endl;
-    }
-
-    imshow("color",imgThresholded);
-    imshow("img",img);
 
 
-  /*  Mat greyimage, binary_img,img_temp;
+    Mat greyimage, binary_img,img_temp;
     Mat hsv, mask;
     cvtColor(img, hsv, COLOR_BGR2HSV);
     inRange(hsv, Scalar(40,43, 46), Scalar(50, 255, 255), mask);
-    imshow("mask", mask);*/
+    imshow("mask", mask);
    /* Mat se = getStructuringElement(MORPH_RECT, Size(5, 5), Point(-1, -1));
     morphologyEx(mask, mask, MORPH_OPEN, se);
      imshow("binary", mask);

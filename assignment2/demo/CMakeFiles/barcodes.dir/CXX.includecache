@@ -11,6 +11,8 @@ iostream
 -
 opencv2/opencv.hpp
 -
+opencv2/highgui/highgui.hpp
+-
 algorithm
 -
 decoding.h
@@ -855,6 +857,10 @@ opencv2/imgcodecs.hpp
 /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/opencv2/imgcodecs.hpp
 opencv2/videoio.hpp
 /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/opencv2/videoio.hpp
+
+/usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/highgui/highgui.hpp
+opencv2/highgui.hpp
+/usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/highgui/opencv2/highgui.hpp
 
 /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/imgcodecs.hpp
 opencv2/core.hpp

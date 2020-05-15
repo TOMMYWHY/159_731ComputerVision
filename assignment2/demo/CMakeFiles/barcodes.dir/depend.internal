@@ -79,6 +79,7 @@ CMakeFiles/barcodes.dir/src/demo.cpp.o
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/flann/saving.h
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/flann/timer.h
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/highgui.hpp
+ /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/highgui/highgui.hpp
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/imgcodecs.hpp
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/imgproc.hpp
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/ml.hpp
