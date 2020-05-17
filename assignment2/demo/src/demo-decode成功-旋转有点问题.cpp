@@ -129,13 +129,10 @@ int convertBinaryToDecimal(char const* const binaryString)
 #if 000001
 int main (int argc, char* argv[]){
     Mat emp_img = imread("./images/2Dempty.jpg",1);
-//    Mat input_img = imread("./images/abcde.jpg",1);
-    Mat input_img = imread("./images/congratulations.jpg",1);
-//    Mat input_img = imread("./images/congratulations_rotated.jpg",1);
+//    Mat input_img = imread("./images/abcde_rotated.jpg",1);
 //    Mat input_img = imread("./images/congratulations_rotated_scaled.jpg",1);
-//    Mat input_img = imread("./images/abcde_rotated.jpg",1);
-//    Mat input_img = imread("./images/abcde_rotated.jpg",1);
-
+//    Mat input_img = imread("./images/Darwin_rotated_scaled.jpg",1);
+    Mat input_img = imread("./images/abcde.jpg",1);
     imshow("emp_img",emp_img);
     imshow("input_img",input_img);
 
@@ -176,30 +173,26 @@ int main (int argc, char* argv[]){
     cout << "emp_dis: "<<emp_dis << endl;
     cout << "input_dis: "<<input_dis << endl;
 
-    /*通过 点积求 两个向量theta 确定 0号 与 2号*/
+    /*通过 点积求 两个向量theta 确定 0号 与 2号*/ // todo
     Vec2f p_i_0(turn_up_Points[0].x, -turn_up_Points[0].y), p_i_1(turn_up_Points[1].x, -turn_up_Points[1].y),p_i_2(turn_up_Points[2].x,-turn_up_Points[2].y);
     Vec2f p_e_0(emp_circles[0].x, -emp_circles[0].y), p_e_1(emp_circles[1].x, -emp_circles[1].y),p_e_2(emp_circles[2].x,-emp_circles[2].y);
     Vec2f i_p1_p0 = p_i_0 - p_i_1;
     Vec2f e_p1_p0 = p_e_0 - p_e_1;
-
-    Vec2f i_p1_p2 = p_i_2 - p_i_1;
-    Vec2f e_p1_p2 = p_e_2 - p_e_1;
     cout << "p1_p0: "<<i_p1_p0<<endl;
     cout << "p2_p0: "<<e_p1_p0<<endl;
 //    double cos_theta =abs( i_p1_p0.dot(e_p1_p0)/ (emp_dis * input_dis) );
-    double cos_theta_A =( i_p1_p0.dot(e_p1_p0)/ (emp_dis * input_dis) );
-    double cos_theta_B =( i_p1_p2.dot(e_p1_p2)/ (emp_dis * input_dis) );
-    cout << "cos_theta_A: " << cos_theta_A<< endl;
-    cout << "cos_theta_B: " << cos_theta_B<< endl;
+    double cos_theta =( i_p1_p0.dot(e_p1_p0)/ (emp_dis * input_dis) );
+    cout << "cos_theta: " << cos_theta<< endl;
     /*如果 cos_theta  不等于1 则交换两点*/
     /*if(cos_theta != 1 ){
         swap(turn_up_Points[0],turn_up_Points[2] );
     }*/
-    if(abs(cos_theta_A - cos_theta_B) <  0.00001){
+    if(cos_theta == 1 ){
         //swap(turn_up_Points[0],turn_up_Points[2] );
         cout <<"正图:theta=0" <<endl;
-    }else {
-        cout <<"交换0 & 2" <<endl;
+    }else if(cos_theta == 0){
+        cout <<"正图:theta=0" <<endl;
+    }else{
         swap(turn_up_Points[0],turn_up_Points[2] );
     }
 
@@ -235,8 +228,10 @@ int main (int argc, char* argv[]){
 //    test=emp_img.clone();/
 //    imshow("test0",test);
 
-    string decode_img ;
-    //TODO 图片需要裁剪
+    string decode_img ; //todo decode image 有误
+    cout << "=========================: " << endl;
+
+
     for (int y=30;y<input_threshold.rows-30;y++){
         for ( int x=30;x<input_threshold.cols-30 ; x++) {
             Vec3b pixel_image = input_threshold.at<Vec3b>(y, x);
@@ -265,6 +260,7 @@ int main (int argc, char* argv[]){
 //                    cout << "采样xy: " << x << ","<<y<< endl;
 //                    cout << "bgr: " << int(MpixelB(emp_img ,x,y)) << ","<< int(MpixelG (emp_img,x,y))<< ","<<int(MpixelR ( emp_img , x , y ))<< endl;
 
+                    //TODO
 
 //                    pixel_image[0] = 255;pixel_image[1] = 0;pixel_image[2] = 255;
                     test.at<Vec3b>(y,x)=pixel_image;
@@ -291,7 +287,7 @@ int main (int argc, char* argv[]){
         }
     }
 
-        imshow("test",test);
+//        imshow("test",test);
 
     cout <<"decode_img:" <<decode_img<<endl;
 
