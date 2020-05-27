@@ -31,7 +31,7 @@ vector<Point2f>  find_points(Mat src , int thred_1,int thred_2, Scalar scalar){
     vector<Point2f> center_point;
     HoughCircles(gray_img , circles , HOUGH_GRADIENT, 1, 50, 100, 50, 30, 50);
     for( size_t i = 0; i < circles.size(); i++ ) {
-        Vec3i c = circles[i]; //todo v2
+        Vec3i c = circles[i];
 //        circle( src, Point(c[0], c[1]), c[2], scalar , 3, 1);
         circle(src, Point(c[0], c[1]), 2, scalar);
         center_point.push_back(Point(c[0], c[1]));
@@ -158,14 +158,14 @@ int main (int argc, char* argv[]){
 //    Mat input_img = imread("./images/Darwin_rotated_scaled.jpg",1);  //  22 894
 
 //        Mat input_img = imread("./images/farfaraway.jpg",1); //20
-//    Mat input_img = imread("./images/farfaraway_rotated.jpg",1); // todo 19
+//    Mat input_img = imread("./images/farfaraway_rotated.jpg",1); //
 //    Mat input_img = imread("./images/farfaraway_scaled.jpg",1); //18
 //    Mat input_img = imread("./images/farfaraway_rotated_scaled.jpg",1); //18
 
 //    imshow("emp_img",emp_img);
     imshow("input_img",input_img);
 
-//    调正input todo planB 可以不调正 直接计算正图与input向量夹角
+
     vector<Point2f> temp_input_circles = find_points(input_img, 100,30 ,Scalar(255,255,0));
     imshow("input_img",input_img);
 
@@ -235,7 +235,7 @@ int main (int argc, char* argv[]){
     /* 此时 图片不是 100% 正图 需要在调整一次*/
 //    dst_img = fine_tuning(dst_img);
 
-/*从新获取调整后图 3个点位置，并确定直角点位为 1号。*/ //todo 根据旋转角度 计算出新3点位置
+/*从新获取调整后图 3个点位置，并确定直角点位为 1号。*/
 
     vector<Point2f> dst_circles = find_points(dst_img ,100,50, Scalar(255,255,255));
     cout << "dst_img  dst_circles: " << dst_circles<< endl;
