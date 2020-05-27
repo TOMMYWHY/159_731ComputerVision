@@ -26,9 +26,6 @@ public:
     float distance;
     Point start_p;
     Point end_p;
-    vector<Point2f> corrcet_right_angle_points;
-    int padding_x; //start_p
-    int padding_y;
     int sub_box_w;
     vector<PointInfo> sub_boxes;
     ImgModel(Mat img);

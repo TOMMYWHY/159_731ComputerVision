@@ -78,7 +78,7 @@ float calculate_distance(vector<Point2f>  input_3_point){
     cout<<"calculate_distance:: => dis:" << dis<<endl;
     return dis;
 }
-Mat second_rotate(Mat input_img,vector<Point2f> input_3_point,float input_dis,float resize){
+Mat second_rotate(Mat input_img,vector<Point2f> input_3_point,float input_dis){
     int angle=0;
     if(input_3_point[1].x<input_dis && input_3_point[1].y > input_dis){
         cout << "正图"<<endl;// 一号位在左下 x 小，y 大
@@ -93,10 +93,11 @@ Mat second_rotate(Mat input_img,vector<Point2f> input_3_point,float input_dis,fl
         angle=270;
     }
 
+    // todo resize
     cv::Point2f center(static_cast<float>(input_img.cols / 2.), static_cast<float>(input_img.rows / 2.));
     Mat dst_img;
     Mat M = getRotationMatrix2D(center,angle,1);//计算旋转的仿射变换矩阵
-    warpAffine(input_img ,dst_img,M,Size(round(resize*input_img.cols),round(resize*input_img.rows)));//仿射变换
+    warpAffine(input_img ,dst_img,M,Size(input_img.cols,input_img.rows));//仿射变换
     return dst_img;
 }
 
@@ -182,7 +183,7 @@ int convertBinaryToDecimal(char const* const binaryString)
 }
 
 
-#if 000001
+#if 0000001
 int main (int argc, char* argv[]){
 
     /*if (argc != 2) {printf("needs an input image\n");exit(0);}
@@ -195,43 +196,58 @@ int main (int argc, char* argv[]){
 
 //    Mat input_img = imread("./images/abcde.jpg",1);
 //    Mat input_img = imread("./images/abcde_rotated.jpg",1);
-    Mat input_img = imread("./images/abcde_scaled.jpg",1);//
-//    Mat input_img = imread("./images/abcde_rotated_scaled.jpg",1);// 16
+//    Mat input_img = imread("./images/abcde_scaled.jpg",1);
+//    Mat input_img = imread("./images/abcde_rotated_scaled.jpg",1);
 
 //    Mat input_img = imread("./images/congratulations.jpg",1);
 //    Mat input_img = imread("./images/congratulations_rotated.jpg",1);
 //    Mat input_img = imread("./images/congratulations_rotated_scaled.jpg",1);
-//    Mat input_img = imread("./images/congratulations_scaled.jpg",1); //  24
+//    Mat input_img = imread("./images/congratulations_scaled.jpg",1);
 //
-//    Mat input_img = imread("./images/Darwin.jpg",1);// 20
+//    Mat input_img = imread("./images/Darwin.jpg",1);
 //    Mat input_img = imread("./images/Darwin_rotated.jpg",1);//
-//    Mat input_img = imread("./images/Darwin_scaled.jpg",1);//  22 902
-//    Mat input_img = imread("./images/Darwin_rotated_scaled.jpg",1);  //  22 894
+//    Mat input_img = imread("./images/Darwin_scaled.jpg",1);
+//    Mat input_img = imread("./images/Darwin_rotated_scaled.jpg",1);
 
-//        Mat input_img = imread("./images/farfaraway.jpg",1); //20
-//    Mat input_img = imread("./images/farfaraway_rotated.jpg",1); // todo 19
-//    Mat input_img = imread("./images/farfaraway_scaled.jpg",1); //18
-//    Mat input_img = imread("./images/farfaraway_rotated_scaled.jpg",1); //18
+//        Mat input_img = imread("./images/farfaraway.jpg",1);
+//    Mat input_img = imread("./images/farfaraway_rotated.jpg",1);
+//    Mat input_img = imread("./images/farfaraway_scaled.jpg",1);
+    Mat input_img = imread("./images/farfaraway_rotated_scaled.jpg",1); //18
 //
 
 
     imshow("input_img",input_img);
+
+
     //first rotated
     Mat input_img_first_rotated =  first_rotate(input_img);
     imshow("input_img_first_rotated",input_img_first_rotated);
 
     ImgModel input_model(input_img_first_rotated);
-    cout <<"input_model:" <<endl;
-    input_model.to_string();
-    cout <<"---------" <<endl;
+//    cout <<"-----input_model------:" <<endl;
+//    input_model.to_string();
+//    cout <<"---------" <<endl;
 
-    float resize = 1/(input_model.distance/emp_model.distance); //todo
-    Mat dst_img =  second_rotate(input_img_first_rotated,input_model.three_circles_points,input_model.distance,resize);
+    float resize_ratio = 1/(input_model.distance/emp_model.distance); //todo
+
+    Mat resize_input;
+    cout <<"resize_ratio:"<< resize_ratio <<endl;
+    resize(input_model.Img,resize_input,
+            Size(round(input_model.Img.cols*resize_ratio),round(input_model.Img.rows*resize_ratio)),
+            0,0,INTER_LINEAR);
+
+//    input_model.Img = resize_input;
+//    cout <<"******resize****  input_model:" <<endl;
+//    input_model.to_string();
+//    cout <<"---------" <<endl;
+    imshow("resize_ratio_input",resize_input);
+    Mat dst_img =  second_rotate(resize_input,input_model.three_circles_points,input_model.distance);
 //    imshow("dst_img",dst_img);
 
     ImgModel dst_model(dst_img, "resized");
-
-
+//    cout <<"******dst_model:" <<endl;
+//    dst_model.to_string();
+//    cout <<"---------" <<endl;
 
     int circle_occupy_top_w = emp_model.start_p.x + emp_model.sub_box_w*6;
     int circle_occupy_bottom_w = emp_model.start_p.x + emp_model.distance - emp_model.sub_box_w ;
@@ -265,20 +281,23 @@ int main (int argc, char* argv[]){
     }
     imshow("middle",middle);
 
-    cout <<"emp_model:" <<endl;
-    emp_model.to_string();
-    cout <<"---------" <<endl;
+//    cout <<"emp_model:" <<endl;
+//    emp_model.to_string();
+//    cout <<"---------" <<endl;
     dst_model.to_string();
 
-//    int padding = 0;
-    for (int i = 0; i < emp_model.sub_boxes.size(); i++) {
-
+    for (int i = 0; i < emp_model.sub_boxes.size(); i++)
+    {
         int padding_x,padding_y;
-        padding_x = dst_model.start_p.x - emp_model.start_p.x;
-        padding_y = dst_model.start_p.y - emp_model.start_p.y;
+        padding_x = (dst_model.start_p.x - emp_model.start_p.x);
+        padding_y = (dst_model.start_p.y - emp_model.start_p.y);
+
 //        cout << "x:"<<emp_model.sub_boxes[i].x<<"y:"<< emp_model.sub_boxes[i].y <<endl;
         int x = emp_model.sub_boxes[i].x + padding_x;
         int y = emp_model.sub_boxes[i].y + padding_y;
+
+//        cout << "new x:"<<x<<"new y:"<< y <<endl;
+
         PointInfo p;
         p.x = x;
         p.y = y;
@@ -318,10 +337,10 @@ int main (int argc, char* argv[]){
     for (int i = 0; i < decode_bit_str.size(); i=i+6) {
         if (i%6==0){
             string sigle = decode_bit_str.substr(i, 6);
-            reverse(sigle.begin(),sigle.end()); // 翻转字符串
+            reverse(sigle.begin(),sigle.end());
             const char* arr = sigle.data();
-            int ret = convertBinaryToDecimal(arr); // 二进制从后往前读
-            cout << sigle<<"=>"<< ret <<"  ;  "; // decode 码已被翻转
+            int ret = convertBinaryToDecimal(arr);
+            cout << sigle<<"=>"<< ret <<"  ;  ";
             decode_to_char +=encodingarray[ret];
         }
     }
@@ -334,7 +353,6 @@ int main (int argc, char* argv[]){
 
 
 
-
     waitKey(0);
     return 1;
 
@@ -342,3 +360,21 @@ int main (int argc, char* argv[]){
 #endif
 
 
+#if 0000
+int main(){
+
+        Mat input_img = imread("./images/farfaraway_rotated.jpg",1); // todo 19
+         imshow("input_img",input_img);
+
+     float resize_ratio =2; //todo
+    resize(input_img,input_img,
+            Size(round(input_img.cols*resize_ratio),round(input_img.rows*resize_ratio)),
+            0,0,INTER_LINEAR);
+
+    imshow("input_img2",input_img);
+
+    waitKey(0);
+    return 1;
+
+}
+#endif

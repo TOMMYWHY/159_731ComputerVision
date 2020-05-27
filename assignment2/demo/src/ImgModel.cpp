@@ -12,7 +12,6 @@ ImgModel::ImgModel(Mat img) {
     this->Img = img;
     this->get_3_circles_points();
     this->get_right_angle_points();
-//    cout <<three_circles_points <<endl;
 
     if(this->rightAngleIndex != 1){
         this->reposition_rightAngle();
@@ -39,22 +38,20 @@ ImgModel::ImgModel(Mat img, string resize) {
     cout <<three_circles_points <<endl;
     this->calculate_distance();
     this->calculate_points();
-
 }
 
 
 void ImgModel::get_3_circles_points( ) {
     Mat mid_img,gray_img;
     medianBlur(this->Img, mid_img, 5);
-
     cvtColor(mid_img, gray_img, COLOR_BGR2GRAY);
     vector<Vec3f> circles ;
     vector<Point2f> center_point;
     HoughCircles(gray_img , circles , HOUGH_GRADIENT, 1, 50, 100, 50, 30, 50);
     for( size_t i = 0; i < circles.size(); i++ ) {
         Vec3i c = circles[i];
-        circle( this->Img, Point(c[0], c[1]), c[2], Scalar(255,255,0) , 3, 1);
-        circle(this->Img, Point(c[0], c[1]), 2, Scalar(255,255,0));
+//        circle( this->Img, Point(c[0], c[1]), c[2], Scalar(255,255,0) , 3, 1);
+//        circle(this->Img, Point(c[0], c[1]), 2, Scalar(255,255,0));
         this->three_circles_points.push_back(Point(c[0], c[1]));
     }
 }
@@ -121,7 +118,7 @@ void ImgModel::calculate_points() {
     start_p_by_index0.x = this->three_circles_points[0].x -3*this->sub_box_w;
     start_p_by_index0.y = this->three_circles_points[0].y -3*this->sub_box_w;
 
-    this->start_p.x  = int((start_p_by_index0.x+start_p_by_index1.x)/2); // use mean value
+    this->start_p.x  = int((start_p_by_index0.x+start_p_by_index1.x)/2); // use 2 point to get mean value to be start point
     this->start_p.y  = int((start_p_by_index0.y+start_p_by_index1.y)/2);
 
     this->end_p.x = this->start_p.x + this->distance + 6 *this->sub_box_w;
@@ -138,8 +135,6 @@ void ImgModel::to_string() {
     << " start_p : "<< this->start_p
     << " end_ p : "<< this->end_p
     << " sub_box_W : "<< this->sub_box_w
-//    << ":"<< this->
-//    << ":"<< this->
     <<endl;
 }
 
