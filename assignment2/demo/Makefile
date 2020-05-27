@@ -150,32 +150,32 @@ src/ImgModel.cpp.s:
 	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/src/ImgModel.cpp.s
 .PHONY : src/ImgModel.cpp.s
 
-src/demo.o: src/demo.cpp.o
+src/demo-yv-final.o: src/demo-yv-final.cpp.o
 
-.PHONY : src/demo.o
+.PHONY : src/demo-yv-final.o
 
 # target to build an object file
-src/demo.cpp.o:
-	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/src/demo.cpp.o
-.PHONY : src/demo.cpp.o
+src/demo-yv-final.cpp.o:
+	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/src/demo-yv-final.cpp.o
+.PHONY : src/demo-yv-final.cpp.o
 
-src/demo.i: src/demo.cpp.i
+src/demo-yv-final.i: src/demo-yv-final.cpp.i
 
-.PHONY : src/demo.i
+.PHONY : src/demo-yv-final.i
 
 # target to preprocess a source file
-src/demo.cpp.i:
-	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/src/demo.cpp.i
-.PHONY : src/demo.cpp.i
+src/demo-yv-final.cpp.i:
+	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/src/demo-yv-final.cpp.i
+.PHONY : src/demo-yv-final.cpp.i
 
-src/demo.s: src/demo.cpp.s
+src/demo-yv-final.s: src/demo-yv-final.cpp.s
 
-.PHONY : src/demo.s
+.PHONY : src/demo-yv-final.s
 
 # target to generate assembly for a file
-src/demo.cpp.s:
-	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/src/demo.cpp.s
-.PHONY : src/demo.cpp.s
+src/demo-yv-final.cpp.s:
+	$(MAKE) -f CMakeFiles/barcodes.dir/build.make CMakeFiles/barcodes.dir/src/demo-yv-final.cpp.s
+.PHONY : src/demo-yv-final.cpp.s
 
 # Help Target
 help:
@@ -189,9 +189,9 @@ help:
 	@echo "... src/ImgModel.o"
 	@echo "... src/ImgModel.i"
 	@echo "... src/ImgModel.s"
-	@echo "... src/demo.o"
-	@echo "... src/demo.i"
-	@echo "... src/demo.s"
+	@echo "... src/demo-yv-final.o"
+	@echo "... src/demo-yv-final.i"
+	@echo "... src/demo-yv-final.s"
 .PHONY : help
 
 

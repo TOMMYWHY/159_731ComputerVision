@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/barcodes.dir/src/ImgModel.cpp.o"
-  "CMakeFiles/barcodes.dir/src/demo.cpp.o"
+  "CMakeFiles/barcodes.dir/src/demo-yv-final.cpp.o"
   "barcodes"
   "barcodes.pdb"
 )

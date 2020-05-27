@@ -128,8 +128,8 @@ CMakeFiles/barcodes.dir/src/ImgModel.cpp.o
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/videostab/stabilizer.hpp
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/videostab/wobble_suppression.hpp
  include/ImgModel.h
-CMakeFiles/barcodes.dir/src/demo.cpp.o
- /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/src/demo.cpp
+CMakeFiles/barcodes.dir/src/demo-yv-final.cpp.o
+ /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/src/demo-yv-final.cpp
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/calib3d.hpp
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/core.hpp
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/core/affine.hpp
@@ -254,5 +254,4 @@ CMakeFiles/barcodes.dir/src/demo.cpp.o
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/videostab/ring_buffer.hpp
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/videostab/stabilizer.hpp
  /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/videostab/wobble_suppression.hpp
- include/ImgModel.h
  include/decoding.h

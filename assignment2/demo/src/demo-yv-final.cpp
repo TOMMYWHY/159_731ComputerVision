@@ -137,15 +137,15 @@ vector<double> vectors_dot(vector<Point2f> turn_up_Points,vector<Point2f> emp_ci
 #if 000001
 int main (int argc, char* argv[]){
 
-    if (argc != 2) {printf("needs an input image\n");exit(0);}
-    Mat input_img = imread ( argv [ 1 ] , 1) ;
+    /*if (argc != 2) {printf("needs an input image\n");exit(0);}
+    Mat input_img = imread ( argv [ 1 ] , 1) ;*/
 
     Mat emp_img = imread("./images/2Dempty.jpg",1);
 
 //    Mat input_img = imread("./images/abcde.jpg",1);
 //    Mat input_img = imread("./images/abcde_rotated.jpg",1);
 //    Mat input_img = imread("./images/abcde_scaled.jpg",1);//
-//    Mat input_img = imread("./images/abcde_rotated_scaled.jpg",1);// 16
+//    Mat input_img = imread("./images/abcde_rotated_scaled.jpg",1);// 16  AA
 
 //    Mat input_img = imread("./images/congratulations.jpg",1);
 //    Mat input_img = imread("./images/congratulations_rotated.jpg",1);
@@ -160,7 +160,7 @@ int main (int argc, char* argv[]){
 //        Mat input_img = imread("./images/farfaraway.jpg",1); //20
 //    Mat input_img = imread("./images/farfaraway_rotated.jpg",1); //
 //    Mat input_img = imread("./images/farfaraway_scaled.jpg",1); //18
-//    Mat input_img = imread("./images/farfaraway_rotated_scaled.jpg",1); //18
+    Mat input_img = imread("./images/farfaraway_rotated_scaled.jpg",1); //18
 
 //    imshow("emp_img",emp_img);
     imshow("input_img",input_img);
@@ -274,7 +274,7 @@ int main (int argc, char* argv[]){
     cout << "each_w: " << each_w<< endl;
 //    cout << "padding: " << padding<< endl;
     int nth_s = scan_begin.x + each_w*circle_occupy_sqt; //nothing there short近距离 // 圆所占位置
-    int nth_l =scan_begin.x + int(dst_dis) ; //nothing there long远距离
+    int nth_l =scan_begin.x + int(dst_dis)  ; //nothing there long远距离
 //    cout << "emp_dis:"<< emp_dis<<endl;
     Mat test;//检测区域图
     vector<Point> std_points ;//
@@ -284,10 +284,6 @@ int main (int argc, char* argv[]){
 //    imshow("test0",test);
 
     string decode_img ;
-    //TODO planB图片可以裁剪
-//    imshow("emp_img",emp_img);
-//    imshow("input_img",input_img);
-
 
     int max_width = dst_dis+ (each_w * 6);
     int step,shift;
@@ -307,30 +303,36 @@ int main (int argc, char* argv[]){
     }
     cout <<"step : "<< step<<endl;
     cout <<"shift : "<< shift<<endl;
-    for (int y=scan_begin.y;y<scan_end.y;y++){
-        for ( int x=scan_begin.x;x<scan_end.x ; x++) {
+//    for (int y=scan_begin.y;y<scan_end.y; y=y+20)
+    for (int y=scan_begin.y;y<scan_end.y; y++)
+    {
+//        for ( int x=scan_begin.x;x<scan_end.x ;  x=x+20)
+        for ( int x=scan_begin.x;x<scan_end.x ;  x++)
+        {
             Vec3b pixel_image = input_threshold.at<Vec3b>(y, x);
 
+            Point c;
+//            c.x = x+ each_w/2;
+//            c.y = y+ each_w/2;
+            c.x = x;
+            c.y = y;
+
             if(x< nth_s && y < nth_s){
-//                cout << "左上圈圈: " << x << ","<<y<< endl;
-                MpixelB(test ,x,y)=255; MpixelG(test ,x,y)=255; MpixelR(test ,x,y)=255;
+                circle(input_threshold,c, 1, Scalar(0,255,0),3);//green
 
             } else if (x < nth_s  && y > nth_l  ){
-//                cout << "左下圈圈: " << x << ","<<y<< endl;
-//                pixel_image[0] = 255;pixel_image[1] = 255;pixel_image[2] = 255;
-                MpixelB(test ,x,y)=255; MpixelG(test ,x,y)=255; MpixelR(test ,x,y)=255;
+                circle(input_threshold,c, 1, Scalar(255,0,0),3);//blue
 
             }else if(x > nth_l  && y >nth_l ){
-//                cout << "右下圈圈: " << x << ","<<y<< endl;
-//                pixel_image[0] = 255;pixel_image[1] = 255;pixel_image[2] = 255;
-                MpixelB(test ,x,y)=255; MpixelG(test ,x,y)=255; MpixelR(test ,x,y)=255;
-
+                circle(input_threshold,c, 1, Scalar(0,255,255),3);//yellow
             } else{
-
-                if( x%each_w==int(each_w/step) && y%each_w==each_w/step)
+                Point c;
+                c.x = x+ each_w/3;
+                c.y = y+ each_w/3;
+                if( x%each_w==(each_w/2) && y%each_w==each_w/2)
                     {
-                    pixel_image[0] = 255;pixel_image[1] = 255;pixel_image[2] = 255;
-                    get_point_count ++;
+                        circle(input_threshold,c, 2, Scalar(0,0,255),1);//yellow
+                        get_point_count ++;
                     test.at<Vec3b>(y,x)=pixel_image;
                     int b = int(MpixelB(input_threshold ,x+shift,y+shift));
                     int g = int(MpixelG(input_threshold ,x+shift,y+shift));
@@ -342,12 +344,9 @@ int main (int argc, char* argv[]){
                     string s_b=to_string(b);
                     string s_g=to_string(g);
                     string s_r=to_string(r);
-//                    string res = s_b+s_g+s_r;
                     string res = s_r+s_g+s_b;
 //            cout << "res:"<< res <<endl;
                     decode_img += res;
-                }else{
-                pixel_image[0] = 0;pixel_image[1] = 0;pixel_image[2] = 255; //红区
                 }
             }
             test.at<Vec3b>(y,x)=pixel_image; // 颜色校正
