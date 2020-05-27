@@ -84,7 +84,13 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/include/ImgModel.h">
+			<Option target="barcodes"/>
+		</Unit>
 		<Unit filename="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/include/decoding.h">
+			<Option target="barcodes"/>
+		</Unit>
+		<Unit filename="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/src/ImgModel.cpp">
 			<Option target="barcodes"/>
 		</Unit>
 		<Unit filename="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/demo/src/demo.cpp">

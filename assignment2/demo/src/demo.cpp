@@ -13,6 +13,7 @@
 #include<iostream>
 #include<stdlib.h>
 #include<stdio.h>
+#include <ImgModel.h>
 
 using namespace std;
 using namespace cv;
@@ -21,11 +22,13 @@ using namespace cv;
 #define MpixelG(image,x,y) ( (uchar *) ( ((image).data) + (y)*(( image).step) ) ) [(x)*((image).channels())+1]
 #define MpixelR(image,x,y) ( (uchar *) ( ((image).data) + (y)*(( image).step) ) ) [(x)*((image).channels())+2]
 
-struct PointInfo{
+/*struct PointInfo{
     int x;
     int y;
-    unsigned int value;
-};
+    int b;
+    int g;
+    int r;
+};*/
 struct ImgInfo{
     Point start_p;
     Point end_p;
@@ -188,9 +191,11 @@ int main (int argc, char* argv[]){
     Mat emp_img = imread("./images/2Dempty.jpg",1);
     imshow("emp_img",emp_img);
 
+    ImgModel emp_model(emp_img);
+
 //    Mat input_img = imread("./images/abcde.jpg",1);
 //    Mat input_img = imread("./images/abcde_rotated.jpg",1);
-//    Mat input_img = imread("./images/abcde_scaled.jpg",1);//
+    Mat input_img = imread("./images/abcde_scaled.jpg",1);//
 //    Mat input_img = imread("./images/abcde_rotated_scaled.jpg",1);// 16
 
 //    Mat input_img = imread("./images/congratulations.jpg",1);
@@ -204,102 +209,129 @@ int main (int argc, char* argv[]){
 //    Mat input_img = imread("./images/Darwin_rotated_scaled.jpg",1);  //  22 894
 
 //        Mat input_img = imread("./images/farfaraway.jpg",1); //20
-    Mat input_img = imread("./images/farfaraway_rotated.jpg",1); // todo 19
+//    Mat input_img = imread("./images/farfaraway_rotated.jpg",1); // todo 19
 //    Mat input_img = imread("./images/farfaraway_scaled.jpg",1); //18
 //    Mat input_img = imread("./images/farfaraway_rotated_scaled.jpg",1); //18
+//
 
-//    imshow("emp_img",emp_img);
-    /*empty iamge*/
-    vector<Point2f> empty_3_point = find_points(emp_img,Scalar(255,255,0));
-    cout <<"empty_3_point:" <<empty_3_point<<endl;
 
     imshow("input_img",input_img);
     //first rotated
     Mat input_img_first_rotated =  first_rotate(input_img);
     imshow("input_img_first_rotated",input_img_first_rotated);
 
-    vector<Point2f> input_3_point = find_points(input_img_first_rotated,Scalar(255,255,0));
-    cout <<"input_3_point:" <<input_3_point<<endl;
+    ImgModel input_model(input_img_first_rotated);
+    cout <<"input_model:" <<endl;
+    input_model.to_string();
+    cout <<"---------" <<endl;
+
+    float resize = 1/(input_model.distance/emp_model.distance); //todo
+    Mat dst_img =  second_rotate(input_img_first_rotated,input_model.three_circles_points,input_model.distance,resize);
+//    imshow("dst_img",dst_img);
+
+    ImgModel dst_model(dst_img, "resized");
 
 
 
-    int enp_right_angle_index =  right_angle_points(empty_3_point);
-//    cout <<"enp_right_angle_index:" <<enp_right_angle_index<<endl;
-//    cout << "************************"<<endl;
-//    cout <<"empty_3_point:" <<empty_3_point<<endl;
-    reposition_right_angle(empty_3_point,enp_right_angle_index);
-    cout <<" after reposition_right_angle  empty_3_point:" <<empty_3_point<<endl; //
-    points_swap_to_right_pos(empty_3_point);
-    cout <<" after points_swap_to_right_pos  empty_3_point:" <<empty_3_point<<endl; //
+    int circle_occupy_top_w = emp_model.start_p.x + emp_model.sub_box_w*6;
+    int circle_occupy_bottom_w = emp_model.start_p.x + emp_model.distance - emp_model.sub_box_w ;
 
-    cout << "************************"<<endl;
-
-    int input_right_angle_index =  right_angle_points(input_3_point);
-    cout <<"input_right_angle_index:" <<input_right_angle_index<<endl;
-    if(input_right_angle_index != 1){
-     reposition_right_angle(input_3_point,input_right_angle_index);
-    }
-    cout <<" after reposition_right_angle  input_3_point:" <<input_3_point<<endl; //
-    float emp_dis = calculate_distance(empty_3_point);
-    float input_dis = calculate_distance(input_3_point);
-    float resize = 1/(input_dis/emp_dis);
-    Mat dst_img =  second_rotate(input_img_first_rotated,input_3_point,input_dis,resize);
-    imshow("dst_img",dst_img);
-
-
-
-    //===============================
-    ImgInfo empty_info;
-    Point start_p_by_index1,start_p_by_index0;
-    empty_info.distance = emp_dis;
-    empty_info.sub_box_w =int( empty_info.distance /(47-6));
-
-    empty_info.corrcet_right_angle_points = empty_3_point;
-    start_p_by_index1.x = empty_info.corrcet_right_angle_points[1].x - 3 * empty_info.sub_box_w;
-    start_p_by_index1.y = empty_info.corrcet_right_angle_points[1].y - empty_info.distance - 3 * empty_info.sub_box_w;
-
-    start_p_by_index0.x = empty_info.corrcet_right_angle_points[0].x -3*empty_info.sub_box_w;
-    start_p_by_index0.y = empty_info.corrcet_right_angle_points[0].y -3*empty_info.sub_box_w;
-
-    empty_info.start_p.x  = int((start_p_by_index0.x+start_p_by_index1.x)/2);
-    empty_info.start_p.y  = int((start_p_by_index0.y+start_p_by_index1.y)/2);
-    cout <<"x:"  << empty_info.start_p.x << " y:"<< empty_info.start_p.y <<endl;
-    empty_info.end_p.x = empty_info.start_p.x + empty_info.distance + 6 *empty_info.sub_box_w;
-    empty_info.end_p.y = empty_info.start_p.y + empty_info.distance + 6 *empty_info.sub_box_w;
-    cout <<"x:"  << empty_info.end_p.x << " y:"<< empty_info.end_p.y <<endl;
-
-    int circle_occupy_top_w = empty_info.start_p.x + empty_info.sub_box_w*6;
-    int circle_occupy_bottom_w = empty_info.start_p.x + empty_info.distance;
     Mat middle ;//检测区域图
-//    middle.create(emp_img.size(),CV_8UC3);
-//    copy(emp_img,middle,NULL);
     middle =emp_img.clone();
-    for (int y = empty_info.start_p.y; y < empty_info.end_p.y; y++) {
-        for (int x = empty_info.start_p.x; x < empty_info.end_p.x; x++) {
 
-                if(x< circle_occupy_top_w && y < circle_occupy_top_w){
-                    MpixelB(middle ,x,y)=0; MpixelG(middle ,x,y)=255; MpixelR(middle ,x,y)=0;//green
-                } else if (x < circle_occupy_top_w  && y > circle_occupy_bottom_w  ){
-//                cout << "左下圈圈: " << x << ","<<y<< endl;
-                    MpixelB(middle ,x,y)=255; MpixelG(middle ,x,y)=0; MpixelR(middle ,x,y)=0;//blue
-
-                }else if(x > circle_occupy_bottom_w  && y >circle_occupy_bottom_w ){
-//                cout << "右下圈圈: " << x << ","<<y<< endl;
-                    MpixelB(middle ,x,y)=0; MpixelG(middle ,x,y)=255; MpixelR(middle ,x,y)=255;//yellow
-                }else{
-                    MpixelB(middle ,x,y)=0; MpixelG(middle ,x,y)=0; MpixelR(middle ,x,y)=255;//red
-                }
-//            circle(src, Point(c[0], c[1]), 2, scalar);
+    for (int y = emp_model.start_p.y; y < emp_model.end_p.y; y=y+20) {
+        for (int x = emp_model.start_p.x; x < emp_model.end_p.x; x=x+20) {
+//            Vec3b pixel_image = emp_img.at<Vec3b>(y, x);
+            Point c;
+            c.x = x+ emp_model.sub_box_w/2;
+            c.y = y+ emp_model.sub_box_w/2;
+            if(x< circle_occupy_top_w && y < circle_occupy_top_w - emp_model.sub_box_w){
+                circle(middle,c, 3, Scalar(0,255,0),3);//green
+            } else if (x < circle_occupy_top_w  && y > circle_occupy_bottom_w  ){
+                circle(middle,c, 3, Scalar(255,0,0),3);//blue
+            }else if(x > circle_occupy_bottom_w  && y >circle_occupy_bottom_w ){
+                circle(middle,c, 3, Scalar(0,255,255),3);//yellow
+            }else{
+                circle(middle,c, 3, Scalar(0,0,255));
+                PointInfo p;
+                p.x = c.x;
+                p.y = c.y;
+                p.b = int(MpixelB(emp_img ,x,y));
+                p.g = int(MpixelG(emp_img ,x,y));
+                p.r = int(MpixelR(emp_img ,x,y));
+                emp_model.sub_boxes.push_back(p);
+            }
         }
     }
     imshow("middle",middle);
-    vector<PointInfo> empty_points;
+
+    cout <<"emp_model:" <<endl;
+    emp_model.to_string();
+    cout <<"---------" <<endl;
+    dst_model.to_string();
+
+//    int padding = 0;
+    for (int i = 0; i < emp_model.sub_boxes.size(); i++) {
+
+        int padding_x,padding_y;
+        padding_x = dst_model.start_p.x - emp_model.start_p.x;
+        padding_y = dst_model.start_p.y - emp_model.start_p.y;
+//        cout << "x:"<<emp_model.sub_boxes[i].x<<"y:"<< emp_model.sub_boxes[i].y <<endl;
+        int x = emp_model.sub_boxes[i].x + padding_x;
+        int y = emp_model.sub_boxes[i].y + padding_y;
+        PointInfo p;
+        p.x = x;
+        p.y = y;
+        p.b = int(MpixelB(dst_img ,x,y));
+        p.g = int(MpixelG(dst_img ,x,y));
+        p.r = int(MpixelR(dst_img ,x,y));
+        p.b=p.b>128 ? 1:0;
+        p.g=p.g>128 ? 1:0;
+        p.r=p.r>128 ? 1:0;
+        dst_model.sub_boxes.push_back(p);
+    }
+
+    string decode_bit_str ;
+    for (int i = 0; i < dst_model.sub_boxes.size()-1; i++) {
+        Point c;
+        c.x =dst_model.sub_boxes[i].x;
+        c.y =dst_model.sub_boxes[i].y;
+        circle(dst_img,c, 4, Scalar(0,0,255),1);//yellow
+       /* cout <<" x: " << dst_model.sub_boxes[i].x
+             <<" y: " << dst_model.sub_boxes[i].y
+             <<" b: " << dst_model.sub_boxes[i].b
+             <<" g: " << dst_model.sub_boxes[i].g
+             <<" r: " << dst_model.sub_boxes[i].r
+        <<endl;*/
+
+        string s_b=to_string(dst_model.sub_boxes[i].b);
+        string s_g=to_string(dst_model.sub_boxes[i].g);
+        string s_r=to_string(dst_model.sub_boxes[i].r);
+        string res = s_r+s_g+s_b;
+        decode_bit_str +=res;
+    }
+    imshow("dst_img",dst_img);
+    cout <<"decode_bit_str:" <<decode_bit_str<<endl;
 
 
+    string decode_to_char;
+    for (int i = 0; i < decode_bit_str.size(); i=i+6) {
+        if (i%6==0){
+            string sigle = decode_bit_str.substr(i, 6);
+            reverse(sigle.begin(),sigle.end()); // 翻转字符串
+            const char* arr = sigle.data();
+            int ret = convertBinaryToDecimal(arr); // 二进制从后往前读
+            cout << sigle<<"=>"<< ret <<"  ;  "; // decode 码已被翻转
+            decode_to_char +=encodingarray[ret];
+        }
+    }
 
-    imwrite("./results/resized_img.jpg",dst_img);
-//    vector<Point2f> input_resized_3_point = find_points(resized_img,Scalar(255,255,0));
-//    cout <<"input_resized_3_point:" <<input_resized_3_point<<endl;
+    cout << "====="<< endl;
+    cout << "====="<< endl;
+
+    cout << decode_to_char<< endl;
+
+
 
 
 

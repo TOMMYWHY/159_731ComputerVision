@@ -25,6 +25,8 @@ stdlib.h
 -
 stdio.h
 -
+ImgModel.h
+-
 
 /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/calib3d.hpp
 opencv2/core.hpp
@@ -1275,6 +1277,14 @@ opencv2/videostab/global_motion.hpp
 /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/videostab/opencv2/videostab/global_motion.hpp
 opencv2/videostab/log.hpp
 /usr/local/Cellar/opencv/4.2.0_1/include/opencv4/opencv2/videostab/opencv2/videostab/log.hpp
+
+include/ImgModel.h
+opencv2/opencv.hpp
+-
+opencv2/highgui/highgui.hpp
+-
+iostream
+-
 
 include/decoding.h
 
