@@ -1,0 +1,3 @@
+/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/backup/demo-v1_done(有小问题)/CMakeFiles/rebuild_cache.dir
+/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/backup/demo-v1_done(有小问题)/CMakeFiles/edit_cache.dir
+/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment2/backup/demo-v1_done(有小问题)/CMakeFiles/barcodes.dir
