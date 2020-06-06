@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/gesture.dir/src/LoadData.cpp.o"
   "CMakeFiles/gesture.dir/src/demo.cpp.o"
   "gesture"
   "gesture.pdb"

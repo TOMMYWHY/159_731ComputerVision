@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demo/src/LoadData.cpp" "/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demo/CMakeFiles/gesture.dir/src/LoadData.cpp.o"
   "/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demo/src/demo.cpp" "/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demo/CMakeFiles/gesture.dir/src/demo.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")

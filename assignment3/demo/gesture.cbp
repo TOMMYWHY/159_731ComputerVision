@@ -84,6 +84,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demo/include/LoadData.h">
+			<Option target="gesture"/>
+		</Unit>
+		<Unit filename="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demo/src/LoadData.cpp">
+			<Option target="gesture"/>
+		</Unit>
 		<Unit filename="/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demo/src/demo.cpp">
 			<Option target="gesture"/>
 		</Unit>

@@ -74,12 +74,12 @@ preinstall:
 CMakeFiles/gesture.dir/all:
 	$(MAKE) -f CMakeFiles/gesture.dir/build.make CMakeFiles/gesture.dir/depend
 	$(MAKE) -f CMakeFiles/gesture.dir/build.make CMakeFiles/gesture.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demo/CMakeFiles --progress-num=1,2 "Built target gesture"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demo/CMakeFiles --progress-num=1,2,3 "Built target gesture"
 .PHONY : CMakeFiles/gesture.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/gesture.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demo/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demo/CMakeFiles 3
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/gesture.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demo/CMakeFiles 0
 .PHONY : CMakeFiles/gesture.dir/rule

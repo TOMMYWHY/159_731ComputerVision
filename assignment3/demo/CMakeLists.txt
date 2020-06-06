@@ -14,14 +14,20 @@ file(GLOB PROJECT_HEADERS include/*.h)
 source_group("Headers" FILES ${PROJECT_HEADERS})
 
 
-#set(SOURCE_FILES src/main.cpp src/ImgModel.cpp include/ImgModel.h src/demo.cpp)
-set(SOURCE_FILES src/demo.cpp)
+set(SOURCE_FILES src/demo.cpp src/LoadData.cpp include/LoadData.h)
+#set(SOURCE_FILES src/MLP_example.cpp)
 
 
 
 
 add_executable(gesture ${SOURCE_FILES} ${PROJECT_HEADERS} )
 target_link_libraries(gesture ${OpenCV_LIBS})
+
+add_custom_command(TARGET ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/res
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>/res)
 
 
 

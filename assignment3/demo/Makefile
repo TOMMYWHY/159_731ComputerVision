@@ -123,6 +123,33 @@ gesture/fast:
 	$(MAKE) -f CMakeFiles/gesture.dir/build.make CMakeFiles/gesture.dir/build
 .PHONY : gesture/fast
 
+src/LoadData.o: src/LoadData.cpp.o
+
+.PHONY : src/LoadData.o
+
+# target to build an object file
+src/LoadData.cpp.o:
+	$(MAKE) -f CMakeFiles/gesture.dir/build.make CMakeFiles/gesture.dir/src/LoadData.cpp.o
+.PHONY : src/LoadData.cpp.o
+
+src/LoadData.i: src/LoadData.cpp.i
+
+.PHONY : src/LoadData.i
+
+# target to preprocess a source file
+src/LoadData.cpp.i:
+	$(MAKE) -f CMakeFiles/gesture.dir/build.make CMakeFiles/gesture.dir/src/LoadData.cpp.i
+.PHONY : src/LoadData.cpp.i
+
+src/LoadData.s: src/LoadData.cpp.s
+
+.PHONY : src/LoadData.s
+
+# target to generate assembly for a file
+src/LoadData.cpp.s:
+	$(MAKE) -f CMakeFiles/gesture.dir/build.make CMakeFiles/gesture.dir/src/LoadData.cpp.s
+.PHONY : src/LoadData.cpp.s
+
 src/demo.o: src/demo.cpp.o
 
 .PHONY : src/demo.o
@@ -159,6 +186,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... gesture"
+	@echo "... src/LoadData.o"
+	@echo "... src/LoadData.i"
+	@echo "... src/LoadData.s"
 	@echo "... src/demo.o"
 	@echo "... src/demo.i"
 	@echo "... src/demo.s"

@@ -251,7 +251,8 @@ int main( int argc, char *argv[] )
 {
     string filename_to_save = "";
     string filename_to_load = "";
-    string data_filename = "letter-recognition.data";
+//    string data_filename = "letter-recognition.data";
+    string data_filename = "./res/Glass.data";
     int method = 0;
 
     int i;
