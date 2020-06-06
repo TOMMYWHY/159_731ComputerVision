@@ -19,6 +19,7 @@
 using namespace std;
 using namespace cv;
 
+#define Mpixel(image,x,y) ( (uchar *) ( ((image).data) + (y)*((image).step) ) ) [(x)]
 #define MpixelB(image,x,y) ( (uchar *) ( ((image).data) + (y)*((image).step) ) ) [(x)*((image).channels())]
 #define MpixelG(image,x,y) ( (uchar *) ( ((image).data) + (y)*(( image).step) ) ) [(x)*((image).channels())+1]
 #define MpixelR(image,x,y) ( (uchar *) ( ((image).data) + (y)*(( image).step) ) ) [(x)*((image).channels())+2]
@@ -56,31 +57,70 @@ void EllipticFourierDescriptors(vector<Point>& contour , vector< float> CE) {
     }
 }
 
+
 int main (){
 
-    Mat img = imread("./images/0_A.jpg",1);
-    imshow("org_img",img);
-    cvtColor ( img , img , COLOR_BGR2GRAY ) ;
-    threshold ( img , img , 150 , 222 , THRESH_BINARY ) ;
+//    Mat img = imread("./images/0_A.jpg",1);
+    Mat img = imread("./images/1_B.jpg",1);
+//    imshow("org_img",img);
+    Mat gray_img, binary_img;
+//    GaussianBlur(img,img,Size(3,3),0,0);
+
+    blur(img,img, Size(3,3));
+    cvtColor ( img , gray_img , COLOR_BGR2GRAY ) ;
+    threshold ( gray_img , binary_img , 225 , 255 , THRESH_BINARY ) ;//todo
 //    threshold(img, img, 150, 255, THRESH_BINARY_INV);
 
-    imshow("Binary",img);
+//    imshow("Binary",binary_img);
+
+    Mat reverse_img = 255 - binary_img;
+//    imshow("reverse_img",reverse_img);
+
+    Mat obj_img;
+    img.copyTo(obj_img);
+
+    for (int x = 0; x < obj_img.cols; x++) {
+        for (int y = 0; y < obj_img.rows; y++) {
+            if(int(Mpixel(reverse_img ,x,y))==0){
+                MpixelB(obj_img ,x,y)= 0;
+                MpixelG(obj_img ,x,y)= 0;
+                MpixelR(obj_img ,x,y)= 0;
+            }
+        }
+    }
+    imshow("obj_img",obj_img);
+    Mat obj_gray_img,obj_binary_img;
+    cvtColor( obj_img , obj_gray_img , COLOR_BGR2GRAY );
+    threshold ( obj_gray_img , obj_binary_img , 5 , 255 , THRESH_BINARY ) ;
     vector<vector<Point> > contours ;
-    findContours ( img , contours ,RETR_EXTERNAL, CHAIN_APPROX_SIMPLE) ;
-    Mat drawing = Mat::zeros( img.size(), CV_8UC3 );
+    findContours ( obj_binary_img , contours ,RETR_EXTERNAL, CHAIN_APPROX_SIMPLE) ;
+    Mat drawing = Mat::zeros( obj_binary_img.size(), CV_8UC3 );
     Scalar color = CV_RGB( 0, 255,0 );
 
     int largestcontour=0;
     long int largestsize=0;
+    vector< vector<Point> > filterContours;	// 筛选后的轮廓
+    vector< Point > hull;	// 凸包络的点集
+
     for(int i = 0; i< contours.size(); i++ ) {
-        if(largestsize < contours[i].size()) { largestsize=contours [ i ]. size () ; largestcontour=i ;
+        /*if(largestsize < contours[i].size()) {
+            largestsize=contours [ i ]. size () ; largestcontour=i ;
+        }*/
+        if (fabs(contourArea(Mat(contours[i]))) > 30000)	//判断手进入区域的阈值
+        {
+            filterContours.push_back(contours[i]);
         }
+
     }
-    drawContours( drawing, contours, largestcontour, color, 1, 8);
+//    drawContours( drawing, contours, largestcontour, color, 1, 8);
+    drawContours(drawing, filterContours, -1, Scalar(0,0,255), 1);
+
+
+    imshow("drawing" , drawing ) ;
+
     vector<float> CE;
     EllipticFourierDescriptors(contours[largestcontour], CE);
 
-    imshow("drawing" , drawing ) ;
     waitKey(0);
 
     return 0;
