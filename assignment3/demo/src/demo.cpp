@@ -40,14 +40,12 @@ using namespace cv;
 
 
 #if 001
-struct Feature{
-    int index;
-    double value;
-};
-vector<Feature> EllipticFourierDescriptors(vector<Point>& contour , vector< float> CE) {
+
+vector<double> EllipticFourierDescriptors(vector<Point>& contour , vector< float> CE) {
     vector<float> ax, ay, bx, by;
-    vector<Feature> feature_list;
+    vector<double> feature_values;
     int m = contour.size();
+    cout <<"contour.size:" << m <<endl;
     int n = 20;//number of CEs we are interested in computing
      float t=(2*M_PI)/m;
     for (int k = 0; k < n; k++) {
@@ -71,15 +69,17 @@ vector<Feature> EllipticFourierDescriptors(vector<Point>& contour , vector< floa
              sqrt((bx[k] * bx[k] + by[k] * by[k]) / (bx[0] * bx[0] + by[0] * by[0])));
     }
     for (int count = 0; count < n && count < CE.size(); count++) {
-//        printf("%d CE %f ax %f ay %f bx %f by%f \n" ,count, CE[count], ax[count], ay[count], bx[count], by[count] );
+        printf("%d CE %f ax %f ay %f bx %f by%f \n" ,count, CE[count], ax[count], ay[count], bx[count], by[count] );
 //        cout <<"CE index:"<<count <<"; CE value:"<< CE[count] <<endl;
         Feature feature;
-        feature.index = count;
-        feature.value = CE[count];
-        feature_list.push_back(feature);
+//        feature.index = count;
+//        feature.value = CE[count];
+//        feature_list.push_back(feature);
+        feature_values.push_back(CE[count]);
+
     }
 
-    return feature_list;
+    return feature_values;
 
 }
 
@@ -105,7 +105,7 @@ Mat get_obj_img(Mat org_img){
     return obj_img;
 }
 
-vector<Feature> get_feature(Mat obj_img){
+vector<double> get_feature(Mat obj_img){
     Mat obj_gray_img,obj_binary_img;
     cvtColor( obj_img , obj_gray_img , COLOR_BGR2GRAY );
     threshold ( obj_gray_img , obj_binary_img , 5 , 255 , THRESH_BINARY ) ;
@@ -119,9 +119,7 @@ vector<Feature> get_feature(Mat obj_img){
     vector< Point > hull;	// 凸包络的点集
 
     for(int i = 0; i< contours.size(); i++ ) {
-        /*if(largestsize < contours[i].size()) {
-            largestsize=contours [ i ]. size () ; largestcontour=i ;
-        }*/
+
         if (fabs(contourArea(Mat(contours[i]))) > 30000)	//判断手进入区域的阈值
         {
             filterContours.push_back(contours[i]);
@@ -131,37 +129,14 @@ vector<Feature> get_feature(Mat obj_img){
     drawContours(drawing, filterContours, -1, Scalar(0,0,255), 1);
     imshow("drawing" , drawing ) ;
     vector<float> CE;
-    vector<Feature> feature_list = EllipticFourierDescriptors(contours[largestcontour], CE);
-    return feature_list;
+    vector<double> feature_values = EllipticFourierDescriptors(contours[largestcontour], CE);
+    return feature_values;
 }
 
 int main (){
 
-    LoadData test("./images/test/");
-//    test.get_files_name();
-
-//    Mat img = imread("./images/0_A.jpg",1);
-    Mat img = imread("./images/1_B.jpg",1);
-//    imshow("org_img",img);
-
-
-   /* Mat obj_img = get_obj_img(img);
-    vector<Feature> feature_list = get_feature(obj_img);
-
-    vector<vector<Feature>> feature_list_all;
-    feature_list_all.push_back(feature_list);*/
-
-/* 写 文件*/
-
-   /* ofstream w_file;
-    w_file.open("./res/test.data",ios::app);
-    for (int i = 0; i < feature_list_all.size(); i++) {
-        for (int j = 0; j < feature_list_all[i].size(); j++) {
-//            cout<<feature_list_all[i][j].value <<"," << endl;
-            w_file << feature_list_all[i][j].value<<",";
-        }
-        w_file<<endl;
-    }*/
+//    LoadData test("./images/test/","./res/test.data");
+    LoadData all_img("./images/all_img/","./res/all_img.data");
 
     cout <<"write done" << endl;
     waitKey(0);
