@@ -16,6 +16,15 @@
 
 #include<stdlib.h>
 #include<stdio.h>
+#include <iostream>
+#ifdef __APPLE__
+#include <sys/uio.h>
+#else
+#include <sys/io.h>
+#endif
+#include <unistd.h>
+#include <dirent.h>
+
 
 #include "LoadData.h"
 
@@ -30,7 +39,7 @@ using namespace cv;
 
 
 
-#if 01
+#if 001
 struct Feature{
     int index;
     double value;
@@ -128,21 +137,23 @@ vector<Feature> get_feature(Mat obj_img){
 
 int main (){
 
-    LoadData test;
-    test.get_files_name();
+    LoadData test("./images/test/");
+//    test.get_files_name();
 
 //    Mat img = imread("./images/0_A.jpg",1);
     Mat img = imread("./images/1_B.jpg",1);
 //    imshow("org_img",img);
-    Mat obj_img = get_obj_img(img);
+
+
+   /* Mat obj_img = get_obj_img(img);
     vector<Feature> feature_list = get_feature(obj_img);
 
     vector<vector<Feature>> feature_list_all;
-    feature_list_all.push_back(feature_list);
+    feature_list_all.push_back(feature_list);*/
 
 /* 写 文件*/
 
-    ofstream w_file;
+   /* ofstream w_file;
     w_file.open("./res/test.data",ios::app);
     for (int i = 0; i < feature_list_all.size(); i++) {
         for (int j = 0; j < feature_list_all[i].size(); j++) {
@@ -150,7 +161,7 @@ int main (){
             w_file << feature_list_all[i][j].value<<",";
         }
         w_file<<endl;
-    }
+    }*/
 
     cout <<"write done" << endl;
     waitKey(0);
@@ -193,6 +204,93 @@ int main(){
     file.close();
 
     cout <<"write func test" << endl;
+    return 0;
+}
+#endif
+
+//get file name
+#if 00
+/*void getFiles(string path, vector<string>& files)
+{
+    //文件句柄
+    long hFile = 0;
+    //文件信息
+    struct _finddata_t fileinfo;
+    string p;
+
+    if((hFile = _findfirst(p.assign(path).append("\\*").c_str(),&fileinfo)) !=  -1)
+    {
+        do
+        {
+            //如果是目录,迭代之
+            //如果不是,加入列表
+            if ((fileinfo.attrib &  _A_SUBDIR))
+            {
+                if(strcmp(fileinfo.name,".") != 0  &&  strcmp(fileinfo.name,"..") != 0)
+                    getFiles( p.assign(path).append("\\").append(fileinfo.name), files );
+            }
+            else
+            {
+                files.push_back(p.assign(path).append("\\").append(fileinfo.name) );
+            }
+        }while(_findnext(hFile, &fileinfo)  == 0);
+        _findclose(hFile);
+    }
+}*/
+
+vector<string> getFiles(string cate_dir){
+    vector<string> files;//存放文件名
+
+    DIR *dir;
+    struct dirent *ptr;
+    char base[1000];
+
+    if ((dir=opendir(cate_dir.c_str())) == NULL)
+    {
+        perror("Open dir error...");
+        exit(1);
+    }
+
+    while ((ptr=readdir(dir)) != NULL)
+    {
+        if(strcmp(ptr->d_name,".")==0 || strcmp(ptr->d_name,"..")==0)    ///current dir OR parrent dir
+            continue;
+        else if(ptr->d_type == 8)    ///file
+            //printf("d_name:%s/%s\n",basePath,ptr->d_name);
+            files.push_back(ptr->d_name);
+        else if(ptr->d_type == 10)    ///link file
+            //printf("d_name:%s/%s\n",basePath,ptr->d_name);
+            continue;
+        else if(ptr->d_type == 4)    ///dir
+        {
+            files.push_back(ptr->d_name);
+            /*
+                memset(base,'\0',sizeof(base));
+                strcpy(base,basePath);
+                strcat(base,"/");
+                strcat(base,ptr->d_nSame);
+                readFileList(base);
+            */
+        }
+    }
+    closedir(dir);
+    sort(files.begin(), files.end());
+    return files;
+
+}
+
+int main(){
+    vector<string> files;
+
+    char * filePath = "./images/test";
+    vector<string> files_name =  getFiles( filePath );
+
+    // print the files get
+    for(int j=0; j< files_name.size(); ++j)
+    {
+        cout << files_name[j] << endl;
+    }
+    cout <<"get file name" << endl;
     return 0;
 }
 #endif
