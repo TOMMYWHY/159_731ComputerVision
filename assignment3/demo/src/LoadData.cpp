@@ -4,6 +4,16 @@
 
 #include "LoadData.h"
 
+/*for test img*/
+LoadData::LoadData() {
+
+}
+vector<double> LoadData:: single_img_for_test(Mat & test_img){
+    vector<double>  test_ce = this->get_single_obj_feature(test_img);
+    return test_ce;
+}
+
+
 LoadData::LoadData(char * filePath,char * dataFrame_path) {
     this->filePath = filePath;
     this->dataFrame_path = dataFrame_path;
@@ -20,8 +30,6 @@ LoadData::LoadData(char * filePath,char * dataFrame_path) {
     this->save_feature();
 
 }
-
-
 
 /*read files name*/
 void LoadData::get_files_name() {
@@ -85,8 +93,6 @@ void LoadData::save_feature() {
     cout << "dataframe saved at : "<<this->dataFrame_path  <<endl;
 }
 
-
-
 Mat LoadData::get_obj_img(Mat org_img) {
     Mat gray_img, binary_img,obj_img;
     blur(org_img,org_img, Size(3,3));
@@ -142,8 +148,8 @@ vector<double> LoadData::EllipticFourierDescriptors(vector<Point>& contour , vec
     vector<double> feature_values;
     int m = contour.size();
 
-//    int n = 20;//number of CEs we are interested in computing
-    int n = 5;//number of CEs we are interested in computing
+    int n = 20;//number of CEs we are interested in computing
+//    int n = 5;//number of CEs we are interested in computing
     float t=(2*M_PI)/m;
     for (int k = 0; k < n; k++) {
         ax.push_back(0.0);
@@ -229,4 +235,5 @@ void LoadData:: split(const string &str,vector<string> &v,string spacer)
     if(pos1 != str.length())
         v.push_back(str.substr(pos1));
 }
+
 

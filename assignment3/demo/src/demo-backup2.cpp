@@ -24,15 +24,14 @@
 #endif
 #include <unistd.h>
 #include <dirent.h>
-#include <chrono>
-#include <ctime>
+
+
 #include "LoadData.h"
 
 
 using namespace std;
 using namespace cv;
 using namespace cv::ml;
-using namespace chrono ;
 
 
 #define Mpixel(image,x,y) ( (uchar *) ( ((image).data) + (y)*((image).step) ) ) [(x)]
@@ -42,7 +41,7 @@ using namespace chrono ;
 
 
 
-#if 000
+#if 001
 static bool read_num_class_data( const string& filename, int var_count, Mat* _data, Mat* _responses )
 {
     const int M = 1024;
@@ -257,40 +256,58 @@ static bool build_mlp_classifier( const string& data_filename,
 int main (int argc, char *argv[]){
 
 
-//// /* step1: Load trainning images and get CE features */
 //    LoadData test("./images/test/","./res/test.data");
 //    LoadData all_img("./images/all_img/","./res/all_img.data");
 
     cout <<"write done" << endl;
 
-////    /* step2: build model */
+    /*build model*/
+    string data_filename = "./res/Glass.data";
+//    const string& data_filename = "./res/all_img.data";
+
+    string filename_to_save = "./res/Glass_ann_model.xml";
+
+    string filename_to_load = "";
+    for( int i = 1; i < argc; i++ )
+    {
+        if( strcmp(argv[i],"-data") == 0 ) // flag "-data letter_recognition.xml"
+        {
+            i++;
+            data_filename = argv[i];
+        }
+        else if( strcmp(argv[i],"-save") == 0 ) // flag "-save filename.xml"
+        {
+            i++;
+            filename_to_save = argv[i];
+            cout << "filename to save is "<< filename_to_save << endl;
+        }
+        else if( strcmp(argv[i],"-load") == 0) // flag "-load filename.xml"
+        {
+            i++;
+            filename_to_load = argv[i];
+        }
+    }
+
 /*
  * train a model
  * params: 4 layer 100 100 fully connected
  * method_param = 0.001, epoch=100
  * */
-   /* string data_filename = "./res/all_img.data";
-    string filename_to_save = "./res/all_img_ann_model.xml";
-    string filename_to_load = "";
-    build_mlp_classifier( data_filename, filename_to_save, filename_to_load );*/
+//    build_mlp_classifier( data_filename, filename_to_save, filename_to_load );
 
-
-////    /* step3: predict test img */
-    Mat test_img = imread("./images/test/9_B.jpg",1);
-    imshow("test_img",test_img);
-    LoadData test;
-    vector<double> test_ce = test.single_img_for_test(test_img);
-    float CE[test_ce.size()] ;
-    for (int i = 0; i < test_ce.size(); i++) {
-        CE[i] = test_ce[i];
-    }
 
     Ptr<ANN_MLP> model;
-    model = load_classifier<ANN_MLP>("./res/all_img_ann_model.xml");
-    Mat test_sample = (Mat_<float>(1,9) << CE[1],CE[2],CE[3],CE[4],CE[5],CE[6],CE[7],CE[8],CE[9]);
-    cout << "sample1:"<<test_sample<< endl;
+    model = load_classifier<ANN_MLP>("./res/Glass_ann_model.xml");
+    float CE[]  = {
+            2,1.51708,13.72,3.68,1.81,72.06,0.64,7.88,0,0
+//            7,1.51711,14.23,0,2.08,73.36,0,8.62,1.67,0
+
+    };
+    Mat sample1 = (Mat_<float>(1,9) << CE[1],CE[2],CE[3],CE[4],CE[5],CE[6],CE[7],CE[8],CE[9]);
+//    Mat sample1 = (Mat_<float>(1,10) << 1.51711,14.23,0,2.08,73.36,0,8.62,1.67,0,0);
+    cout << "sample1:"<<sample1<< endl;
     Mat response_mat;
-    float r = model->predict( test_sample );
+    float r = model->predict( sample1 );
     cout << "predict result :"<< r <<endl;
 
 
@@ -422,69 +439,5 @@ int main(){
     }
     cout <<"get file name" << endl;
     return 0;
-}
-#endif
-
-//webcam
-#if 000
-
-int main(){
-    Point area_star = Point(150,100);
-    Point area_end =Point(350,350);
-
-    VideoCapture capture;
-    capture.open(0);
-    namedWindow("WebCam",1);
-    capture.set( CAP_PROP_FRAME_WIDTH, 640) ;
-    capture.set(CAP_PROP_FRAME_HEIGHT, 480) ;
-    Mat frame;
-    capture >>frame;
-    printf( " frame size %d %d nn" , frame.rows , frame.cols) ;
-    int key=0;
-    double fps =0.0;
-    while(1){
-        system_clock:: time_point start = system_clock::now();
-        capture >>frame;
-        if(frame.empty()){
-            break;
-        }
-        char print_it[100];
-        sprintf( print_it, "%2.1f " , fps ) ;
-        putText ( frame ,print_it, Point( 10 , 30 ) , FONT_HERSHEY_PLAIN,
-        2 , Scalar(255 ,255 ,255) , 2 , 8) ;
-
-
-        rectangle(frame,area_star,area_end,Scalar(255,102,0),3,8,0);
-
-        imshow( "WebCam" , frame ) ;
-        key=waitKey ( 1 ) ;
-        if ( key==113 || key==27) return 0 ;
-        system_clock:: time_point end = system_clock::now();
-        double seconds = std :: chrono :: duration_cast<std :: chrono ::
-        microseconds >(end - start ) . count ( ) ;
-        fps = 1000000/ seconds;
-//        cout << " frames: " << fps << "; seconds:" << seconds << endl ;
-        if(fps<80.0){
-            cout << " fps <80, get area:" << seconds << endl ;
-
-        }
-    }
-    return 0;
-}
-#endif
-
-//截取area
-#if 0001
-int main(){
-    Mat img = imread("./images/test/0_A.jpg",1);
-    Point area_star = Point(150,100);
-    Point area_end =Point(350,350);
-    Mat imageROI=img(Rect(area_star.x,area_star.y,area_end.x-area_star.x,area_end.y-area_star.y));
-
-
-    rectangle(img,area_star,area_end,Scalar(255,102,0),3,8,0);
-    imshow("img",img);
-    imshow("imageROI",imageROI);
-    waitKey(0);
 }
 #endif
