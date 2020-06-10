@@ -44,47 +44,69 @@ using namespace chrono ;
 
 
 
+void EllipticFourierDescriptors(vector<Point>& contour , vector< float> & CE) ;
 
 
-void EllipticFourierDescriptors(vector<Point>& contour , vector< float> & CE) {
-    vector<float> ax, ay, bx, by;
-//    vector<Feature> feature_list;
-    vector<double> feature_values;
-    int m = contour.size();
+/*int iLowH = 0,iLowS=66,iLowV=76, iHighH=179,iHighS=255,iHighV=255;
+void callback(int,void*){
+    iLowH=getTrackbarPos("Low H","color");
+    iHighH=getTrackbarPos("High H","color");
+    iLowS=getTrackbarPos("Low S","color");
+    iHighS=getTrackbarPos("High S","color");
+    iLowV=getTrackbarPos("Low V","color");
+    iHighV=getTrackbarPos("High V","color");
+}*/
 
-//    int n = 50;//number of CEs we are interested in computing
-    int n = 30;//number of CEs we are interested in computing
-//    int n = 20;//number of CEs we are interested in computing
-//    int n = 10;//number of CEs we are interested in computing
-    float t=(2*M_PI)/m;
-    for (int k = 0; k < n; k++) {
-        ax.push_back(0.0);
-        ay.push_back(0.0);
-        bx.push_back(0.0);
-        by.push_back(0.0);
-        for (int i = 0; i < m; i++) {
-            ax[k] = ax[k] + contour[i].x * cos((k + 1) * t * (i));
-            bx[k] = bx[k] + contour[i].x * sin((k + 1) * t * (i));
-            ay[k] = ay[k] + contour[i].y * cos((k + 1) * t * (i));
-            by[k] = by[k] + contour[i].y * sin((k + 1) * t * (i));
-        }
-        ax[k] = (ax[k]) / m;
-        bx[k] = (bx[k]) / m;
-        ay[k] = (ay[k]) / m;
-        by[k] = (by[k]) / m;
-    }
-    for (int k = 0; k < n; k++) {
-        CE.push_back(sqrt((ax[k] * ax[k] + ay[k] * ay[k]) / (ax[0] * ax[0] + ay[0] * ay[0])) +
-                     sqrt((bx[k] * bx[k] + by[k] * by[k]) / (bx[0] * bx[0] + by[0] * by[0])));
-    }
-    for (int count = 0; count < n && count < CE.size(); count++) {
-//        printf("%d CE %f ax %f ay %f bx %f by%f \n" ,count, CE[count], ax[count], ay[count], bx[count], by[count] );
-        feature_values.push_back(CE[count]);
-    }
-//    return feature_values;
-
-}
 void test_webcam(Mat imageROI, vector< float> & CE){
+    /*namedWindow("color");
+    createTrackbar("Low H","color",&iLowH,179,callback);//Hue0-179
+    createTrackbar("High H","color",&iHighH,179,callback);
+    createTrackbar("Low S","color",&iLowS,255,callback);
+    createTrackbar("High S","color",&iHighS,255,callback);
+    createTrackbar("Low V","color",&iLowV,255,callback);
+    createTrackbar("High V","color",&iHighV,255,callback);
+    callback(0,0);*/
+
+    medianBlur(imageROI, imageROI, 5);
+    imshow( "imageROI" , imageROI ) ;
+    Mat binary_img,element;
+    Mat hsv ( imageROI.rows , imageROI.cols ,CV_8UC3 ,Scalar::all(0)) ;
+    cvtColor(imageROI, hsv, COLOR_BGR2HSV);
+    inRange(hsv,Scalar(0,38,76),Scalar(179,255,255),binary_img);
+//    inRange(hsv,Scalar(0,66,76),Scalar(179,255,255),binary_img);
+//    inRange(hsv,Scalar(iLowH,iLowS,iLowV),Scalar(iHighH,iHighS,iHighV),binary_img);
+
+//    inRange(hsv,Scalar(0,29,81),Scalar(179,255,242),binary_img);
+//iLowH:0iLowS:66iLowV:76iHighH:179iHighS:255iHighV:255
+    element=getStructuringElement(MORPH_RECT,Size(3,3));
+    morphologyEx(binary_img,binary_img,MORPH_OPEN,element);
+    morphologyEx(binary_img,binary_img,MORPH_CLOSE,element);
+    Canny(binary_img,binary_img,20,60);
+    imshow("binary_img",binary_img);
+
+    vector<vector<Point> > contours ;
+    findContours ( binary_img , contours ,RETR_EXTERNAL, CHAIN_APPROX_NONE) ;
+//    findContours ( obj_binary_img , contours ,RETR_EXTERNAL, CHAIN_APPROX_NONE) ;
+    Mat drawing = Mat::zeros( binary_img.size(), CV_8UC3 );
+    Scalar color = CV_RGB( 0, 255,0 );
+    int largestcontour=0;
+    long int largestsize=0;
+    vector< vector<Point> > filterContours;	// 筛选后的轮廓
+    vector< Point > hull;	// 凸包络的点集
+    for(int i = 0; i< contours.size(); i++ ) {
+        if(largestsize < contours[i].size()) {
+            largestsize=contours [ i ]. size () ;
+            largestcontour=i ;
+        }
+    }
+    drawContours( drawing, contours, largestcontour, color, 1, 8);
+    imshow("drawing" , drawing ) ;
+
+//    vector<float> CE;
+    EllipticFourierDescriptors(contours[largestcontour], CE);
+}
+
+void test_webcam_old(Mat imageROI, vector< float> & CE){
     Mat hsv ( imageROI . rows , imageROI.cols ,CV_8UC3 ,Scalar::all(0)) ;
     cvtColor(imageROI, hsv,COLOR_BGR2HSV);
     imshow( "hsv" , hsv ) ;
@@ -128,9 +150,6 @@ void test_webcam(Mat imageROI, vector< float> & CE){
     EllipticFourierDescriptors(contours[largestcontour], CE);
 }
 
-
-
-
 static bool read_num_class_data( const string& filename, int var_count, Mat* _data, Mat* _responses );
 
 template<typename T>
@@ -165,23 +184,27 @@ int main (int argc, char *argv[]){
     else if(command=="static"){
         //// /* step3:single file testing */
 
-//    Mat test_img = imread("./images/test/0_A.jpg",1);//7
-//        Mat test_img = imread("./images/test/1_A.jpg",1);
-//        Mat test_img = imread("./images/test/2_A.jpg",1);//5
-//        Mat test_img = imread("./images/test/3_A.jpg",1);//3
-//        Mat test_img = imread("./images/test/4_A.jpg",1);//5
-//        Mat test_img = imread("./images/test/5_A.jpg",1);//1
-        Mat test_img = imread("./images/test/6_A.jpg",1);//5
-        /*LoadData test(test_img);
+//    Mat test_img = imread("./images/test/0_A.jpg",1);//0
+//        Mat test_img = imread("./images/test/1_A.jpg",1);//0
+//        Mat test_img = imread("./images/test/2_A.jpg",1);//2
+//        Mat test_img = imread("./images/test/3_A.jpg",1);//2
+//        Mat test_img = imread("./images/test/4_A.jpg",1);//3
+        Mat test_img = imread("./images/test/5_A.jpg",1);//5
+//        Mat test_img = imread("./images/test/6_A.jpg",1);//5
+//        Mat test_img = imread("./images/test/7_A.jpg",1);//2
+//        Mat test_img = imread("./images/test/8_A.jpg",1);//5
+//        Mat test_img = imread("./images/test/9_A.jpg",1);//5
+//        Mat test_img = imread("./images/all_img/hand5_6_bot_seg_3_cropped.png",1);//5
+        LoadData test(test_img);
         vector<double> test_ce = test.test_ce;
         float CE[test_ce.size()] ;
         for (int i = 0; i < test_ce.size(); i++) {
             CE[i] = test_ce[i];
         }
-        cout <<"test_ce.size:"<<test_ce.size() <<endl;*/
+        cout <<"test_ce.size:"<<test_ce.size() <<endl;
 
-        vector<float> CE;
-        test_webcam( test_img, CE);
+        /*vector<float> CE;
+        test_webcam( test_img, CE);*/
         Ptr<ANN_MLP> model;
         model = load_classifier<ANN_MLP>("./res/all_img_ann_model.xml");
         Mat sample1 = (Mat_<float>(1,29) << CE[1],CE[2],CE[3],CE[4],CE[5],CE[6],CE[7],CE[8],CE[9],CE[10],
@@ -192,6 +215,7 @@ int main (int argc, char *argv[]){
         Mat response_mat;
         float r = model->predict( sample1 );
         cout << "predict result :"<< r <<endl;
+        waitKey(0);
     }
     else if(command=="webcam"){
         /*webcam*/
@@ -213,6 +237,7 @@ int main (int argc, char *argv[]){
         printf( " frame size %d %d nn" , frame.rows , frame.cols) ;
         int key=0;
         double fps =0.0;
+
         while(1){
             system_clock:: time_point start = system_clock::now();
             capture >>frame;
@@ -222,6 +247,8 @@ int main (int argc, char *argv[]){
             imageROI =frame(Rect(area_star.x+1,area_star.y+1,area_end.x-area_star.x-1,area_end.y-area_star.y-1));
             vector<float> CE;
             test_webcam( imageROI, CE);
+
+
             for (int i = 0; i < CE.size(); i++) {
 //               CE[i] = test_ce[i];
                 cout <<"ce:"<<CE[i] << ",";
@@ -258,9 +285,9 @@ int main (int argc, char *argv[]){
 //            waitKey(500);
             waitKey(1);
         }
+        waitKey(0);
 
     }
-    waitKey(0);
     return 0;
 }
 
@@ -441,8 +468,9 @@ static bool build_mlp_classifier( const string& data_filename,
         }
 
         // 2. train classifier
-        int layer_sz[] = { data.cols, 100, 100, class_count };
+        int layer_sz[] = { data.cols, 100,100,100, class_count };
 //        int layer_sz[] = { data.cols, 32,64, 128, 256,512,256, 128, 64,32, class_count };//todo
+//        int layer_sz[] = { data.cols,64, 128, 256,512,256, 128, 64, class_count };//todo
         cout <<  " sizeof layer_sz " << sizeof(layer_sz) << " sizeof layer_sz[0]) " << sizeof(layer_sz[0]) << endl;//todo sizeof layer_sz 24 sizeof layer_sz[0]) 4
         int nlayers = (int)(sizeof(layer_sz)/sizeof(layer_sz[0]));
         cout << " nlayers  " << nlayers << endl;
@@ -450,10 +478,12 @@ static bool build_mlp_classifier( const string& data_filename,
 
 #if 1
         int method = ANN_MLP::BACKPROP;
-        double method_param = 0.001;
+//        double method_param = 0.001;
 //        double method_param = 0.0001;
+        double method_param = 0.000001;
+        int max_iter = 1000;
 //        int max_iter = 500;
-        int max_iter = 300;
+//        int max_iter = 300;
 //        int max_iter = 100;
 //        int max_iter = 50;
 #else
@@ -475,4 +505,43 @@ static bool build_mlp_classifier( const string& data_filename,
     }
     test_and_save_classifier(model, data, responses, ntrain_samples, 0, filename_to_save);
     return true;
+}
+
+void EllipticFourierDescriptors(vector<Point>& contour , vector< float> & CE) {
+    vector<float> ax, ay, bx, by;
+//    vector<Feature> feature_list;
+    vector<double> feature_values;
+    int m = contour.size();
+
+//    int n = 50;//number of CEs we are interested in computing
+    int n = 30;//number of CEs we are interested in computing
+//    int n = 20;//number of CEs we are interested in computing
+//    int n = 10;//number of CEs we are interested in computing
+    float t=(2*M_PI)/m;
+    for (int k = 0; k < n; k++) {
+        ax.push_back(0.0);
+        ay.push_back(0.0);
+        bx.push_back(0.0);
+        by.push_back(0.0);
+        for (int i = 0; i < m; i++) {
+            ax[k] = ax[k] + contour[i].x * cos((k + 1) * t * (i));
+            bx[k] = bx[k] + contour[i].x * sin((k + 1) * t * (i));
+            ay[k] = ay[k] + contour[i].y * cos((k + 1) * t * (i));
+            by[k] = by[k] + contour[i].y * sin((k + 1) * t * (i));
+        }
+        ax[k] = (ax[k]) / m;
+        bx[k] = (bx[k]) / m;
+        ay[k] = (ay[k]) / m;
+        by[k] = (by[k]) / m;
+    }
+    for (int k = 0; k < n; k++) {
+        CE.push_back(sqrt((ax[k] * ax[k] + ay[k] * ay[k]) / (ax[0] * ax[0] + ay[0] * ay[0])) +
+                     sqrt((bx[k] * bx[k] + by[k] * by[k]) / (bx[0] * bx[0] + by[0] * by[0])));
+    }
+    for (int count = 0; count < n && count < CE.size(); count++) {
+//        printf("%d CE %f ax %f ay %f bx %f by%f \n" ,count, CE[count], ax[count], ay[count], bx[count], by[count] );
+        feature_values.push_back(CE[count]);
+    }
+//    return feature_values;
+
 }

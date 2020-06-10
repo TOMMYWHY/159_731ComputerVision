@@ -6,15 +6,58 @@
 
 /*for test single img*/
 LoadData::LoadData(Mat imageROI) {
-//    medianBlur(imageROI, imageROI, 3);
 
+    this->test_ce =  get_single_feature_HSV(imageROI);
+//    this->test_ce =  get_single_feature_RGB(imageROI);
+
+}
+
+vector<double> LoadData:: get_single_feature_HSV(Mat imageROI){
+    medianBlur(imageROI, imageROI, 5);
+    imshow( "imageROI" , imageROI ) ;
+    Mat binary_img,element;
+    Mat hsv ( imageROI.rows , imageROI.cols ,CV_8UC3 ,Scalar::all(0)) ;
+    cvtColor(imageROI, hsv, COLOR_BGR2HSV);
+    inRange(hsv,Scalar(0,66,76),Scalar(179,255,255),binary_img);
+//    inRange(hsv,Scalar(0,29,81),Scalar(179,255,242),binary_img);
+//iLowH:0iLowS:66iLowV:76iHighH:179iHighS:255iHighV:255
+    element=getStructuringElement(MORPH_RECT,Size(3,3));
+    morphologyEx(binary_img,binary_img,MORPH_OPEN,element);
+    morphologyEx(binary_img,binary_img,MORPH_CLOSE,element);
+    Canny(binary_img,binary_img,20,60);
+//    imshow("binary_img",binary_img);
+
+    vector<vector<Point> > contours ;
+    findContours ( binary_img , contours ,RETR_EXTERNAL, CHAIN_APPROX_NONE) ;
+//    findContours ( obj_binary_img , contours ,RETR_EXTERNAL, CHAIN_APPROX_NONE) ;
+    Mat drawing = Mat::zeros( binary_img.size(), CV_8UC3 );
+    Scalar color = CV_RGB( 0, 255,0 );
+    int largestcontour=0;
+    long int largestsize=0;
+    vector< vector<Point> > filterContours;	// 筛选后的轮廓
+    vector< Point > hull;	// 凸包络的点集
+    for(int i = 0; i< contours.size(); i++ ) {
+        if(largestsize < contours[i].size()) {
+            largestsize=contours [ i ]. size () ;
+            largestcontour=i ;
+        }
+    }
+    drawContours( drawing, contours, largestcontour, color, 1, 8);
+    imshow("drawing" , drawing ) ;
+    vector<float> CE;
+    vector<double> feature_values = this->EllipticFourierDescriptors(contours[largestcontour], CE);
+    return feature_values;
+}
+
+vector<double> LoadData:: get_single_feature_RGB(Mat imageROI){
+    //    medianBlur(imageROI, imageROI, 3);
     Mat hsv ( imageROI.rows , imageROI.cols ,CV_8UC3 ,Scalar::all(0)) ;
     cvtColor(imageROI, hsv, COLOR_BGR2HSV);
     imshow( "hsv" , hsv ) ;
     vector<Mat> channels;
     ::split(hsv, channels);//分割image1的通道
     Mat channelsH = channels[0];//获取通道1
-    Mat channelsS = channels[1];//获取通道2
+    Mat  channelsS = channels[1];//获取通道2
     Mat channelsV = channels[2];
     imshow( "channelsH" , channelsH ) ;
     imshow( "channelsS" , channelsS ) ;
@@ -34,7 +77,7 @@ LoadData::LoadData(Mat imageROI) {
             }
         }
     }
-        medianBlur(obj_img, obj_img, 5);
+    medianBlur(obj_img, obj_img, 5);
     imshow( "obj_img" , obj_img ) ;
     Mat obj_gray_img,obj_binary_img;
     cvtColor( obj_img , obj_gray_img , COLOR_BGR2GRAY );
@@ -60,13 +103,11 @@ LoadData::LoadData(Mat imageROI) {
 
     }
     drawContours( drawing, contours, largestcontour, color, 1, 8);
-        imshow("drawing" , drawing ) ;
+    imshow("drawing" , drawing ) ;
     vector<float> CE;
     vector<double> feature_values = EllipticFourierDescriptors(contours[largestcontour], CE);
-    this->test_ce =  feature_values;
-
+    return feature_values;
 }
-
 
 /*for train images*/
 
@@ -76,7 +117,8 @@ LoadData::LoadData(string filePath, string dataFrame_path) {
     cout << this->filePath<< endl;
     cout << "extracting features....."<<endl;
     this->get_files_name();
-    this->get_features();
+//    this->get_features();
+    this->get_features_RGB();
     this->save_feature();
 
 
@@ -115,10 +157,52 @@ void LoadData::get_features() {
 //        for (int i = 0; i <2; i++)
     {
         Mat img = imread( samples[i].path,1);
+        medianBlur(img, img, 5);
+        Mat binary_img,element;
+        Mat hsv ( img.rows , img.cols ,CV_8UC3 ,Scalar::all(0)) ;
+        cvtColor(img, hsv, COLOR_BGR2HSV);
+//    inRange(hsv,Scalar(0,66,76),Scalar(179,255,255),binary_img);
+        inRange(hsv,Scalar(0,29,81),Scalar(179,255,242),binary_img);
+//iLowH:0iLowS:66iLowV:76iHighH:179iHighS:255iHighV:255
+        element=getStructuringElement(MORPH_RECT,Size(3,3));
+        morphologyEx(binary_img,binary_img,MORPH_OPEN,element);
+        morphologyEx(binary_img,binary_img,MORPH_CLOSE,element);
+        Canny(binary_img,binary_img,20,60);
+        imshow("binary_img",binary_img);
+
+        vector<vector<Point> > contours ;
+        findContours ( binary_img , contours ,RETR_EXTERNAL, CHAIN_APPROX_NONE) ;
+//    findContours ( obj_binary_img , contours ,RETR_EXTERNAL, CHAIN_APPROX_NONE) ;
+        Mat drawing = Mat::zeros( binary_img.size(), CV_8UC3 );
+        Scalar color = CV_RGB( 0, 255,0 );
+        int largestcontour=0;
+        long int largestsize=0;
+        vector< vector<Point> > filterContours;	// 筛选后的轮廓
+        vector< Point > hull;	// 凸包络的点集
+        for(int i = 0; i< contours.size(); i++ ) {
+            if(largestsize < contours[i].size()) {
+                largestsize=contours [ i ]. size () ;
+                largestcontour=i ;
+            }
+
+        }
+        drawContours( drawing, contours, largestcontour, color, 1, 8);
+        imshow("drawing" , drawing ) ;
+        vector<float> CE;
+        vector<double> feature_values = EllipticFourierDescriptors(contours[largestcontour], CE);
+        samples[i].feature = feature_values;
+    }
+
+}
+void LoadData::get_features_RGB() {
+    for (int i = 0; i < this->samples.size(); i++)
+//        for (int i = 0; i <2; i++)
+    {
+        Mat img = imread( samples[i].path,1);
         Mat gray_img,binary_img;
         cvtColor( img , gray_img , COLOR_BGR2GRAY );
         threshold ( gray_img , binary_img , 5 , 255 , THRESH_BINARY ) ;
-//        imshow("binary_img" , binary_img ) ;
+        imshow("binary_img" , binary_img ) ;
         vector<vector<Point> > contours ;
         findContours ( binary_img , contours ,RETR_EXTERNAL, CHAIN_APPROX_NONE) ;
         Mat drawing = Mat::zeros( binary_img.size(), CV_8UC3 );
@@ -135,7 +219,7 @@ void LoadData::get_features() {
 
         }
         drawContours( drawing, contours, largestcontour, color, 1, 8);
-//        imshow("drawing" , drawing ) ;
+        imshow("drawing" , drawing ) ;
         vector<float> CE;
         vector<double> feature_values = EllipticFourierDescriptors(contours[largestcontour], CE);
         samples[i].feature = feature_values;

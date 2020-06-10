@@ -55,9 +55,11 @@ public:
     ~LoadData();
     void get_files_name();
 //    void get_feature(Sample sample);
+    vector<double> get_single_feature_HSV(Mat imageROI);
+    vector<double> get_single_feature_RGB(Mat imageROI);
 
-    void get_features();
-
+    void get_features();//v2
+    void get_features_RGB();//v1
 //    Mat get_obj_img(Mat org_img);
     vector<double>  get_single_obj_feature(Mat & obj_img);
     vector<double> EllipticFourierDescriptors(vector<Point>& contour , vector< float> & CE);
