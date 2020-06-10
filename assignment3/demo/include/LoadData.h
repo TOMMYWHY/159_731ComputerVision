@@ -46,7 +46,8 @@ public:
     vector<Sample> samples;
 
 
-    LoadData();
+//    LoadData(char * test_img_path);
+    LoadData(Mat imageROI);
 
     LoadData(char * filePath,char * dataFrame_path);
     ~LoadData();
@@ -56,8 +57,9 @@ public:
     vector<double>  get_single_obj_feature(Mat & obj_img);
     vector<double> EllipticFourierDescriptors(vector<Point>& contour , vector< float> & CE);
     void save_feature();
-    vector<double> single_img_for_test(Mat & test_img);
 
+//    vector<double> single_img_for_test(Mat & test_img);
+    vector<double>  test_ce;
 
 private:
     vector<string> getFiles(string cate_dir);

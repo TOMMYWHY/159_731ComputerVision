@@ -5,19 +5,44 @@
 #include "LoadData.h"
 
 /*for test img*/
-LoadData::LoadData() {
+LoadData::LoadData(Mat imageROI) {
+/*//    Mat test_obj_img = this->get_obj_img(imageROI);
+    Mat gray_img, binary_img,obj_img;
+    blur(imageROI,imageROI, Size(3,3));
+//    imshow("imageROI",imageROI);
 
+    cvtColor ( imageROI , gray_img , COLOR_BGR2GRAY ) ;
+//    imshow("gray_img",gray_img);
+
+    threshold ( gray_img , binary_img , 225 , 255 , THRESH_BINARY ) ;//todo 区域划分不精准
+//        imshow("Binary",binary_img);
+
+    Mat reverse_img = 255 - binary_img;
+    imageROI.copyTo(obj_img);
+    for (int x = 0; x < obj_img.cols; x++) {
+        for (int y = 0; y < obj_img.rows; y++) {
+            if(int(Mpixel(reverse_img ,x,y))==0){
+                MpixelB(obj_img ,x,y)= 0;
+                MpixelG(obj_img ,x,y)= 0;
+                MpixelR(obj_img ,x,y)= 0;
+            }
+        }
+    }*/
+//    imshow("obj_img",obj_img);
+//    this->test_ce = this->get_single_obj_feature(obj_img);
+    this->test_ce = this->get_single_obj_feature(imageROI);
 }
-vector<double> LoadData:: single_img_for_test(Mat & test_img){
+
+/*vector<double> LoadData:: single_img_for_test(Mat & test_img){
     vector<double>  test_ce = this->get_single_obj_feature(test_img);
     return test_ce;
-}
+}*/
 
 
 LoadData::LoadData(char * filePath,char * dataFrame_path) {
     this->filePath = filePath;
     this->dataFrame_path = dataFrame_path;
-
+    cout << this->filePath<< endl;
     this->get_files_name();
 
     /*for (int i = 0; i < this->samples.size(); i++) {
@@ -35,8 +60,12 @@ LoadData::LoadData(char * filePath,char * dataFrame_path) {
 void LoadData::get_files_name() {
 //    cout << "filePath:" <<this->filePath  <<endl;
     vector<string> files_name_full =  getFiles( this->filePath );
-      for(int i=0; i< files_name_full.size(); ++i)
+//    cout <<files_name_full.size()<<endl;
+
+    for(int i = 0; i < files_name_full.size(); i++)
+//    for(int i = 0; i < 1; i++)
       {
+//          cout << "files_name_full:" <<files_name_full[i] <<endl;
           int index = files_name_full[i].find_first_of(".");
           string filename = files_name_full[i].substr (0,index);
           vector<string> values; //
@@ -50,7 +79,9 @@ void LoadData::get_files_name() {
           }else{
               sample.label = values[1];
           }
-          sample.path = filePath+files_name_full[i];
+//                  cout << "   sample.label :" <<   sample.label  <<endl;
+
+        sample.path = filePath+files_name_full[i];
           this->samples.push_back(sample);
       }
 }
@@ -62,7 +93,7 @@ void LoadData::get_features() {
         Mat img = imread( samples[i].path,1);
         Mat obj_img = get_obj_img(img);
 //        cout <<"./images/obj_img/"+this->samples[i].file_name+".jpg"<<endl;
-//        imwrite("./images/obj_img/"+this->samples[i].file_name+".jpg",obj_img);
+        imwrite("./images/obj_img/"+this->samples[i].file_name+".jpg",obj_img);
 
         samples[i].feature = this->get_single_obj_feature(obj_img);
 
@@ -94,11 +125,25 @@ void LoadData::save_feature() {
 }
 
 Mat LoadData::get_obj_img(Mat org_img) {
-    Mat gray_img, binary_img,obj_img;
+//    imshow("org_img",org_img);
+    for (int x = 0; x < org_img.cols; x++) {
+        for (int y = 0; y < org_img.rows; y++) {
+            if(int(MpixelB(org_img ,x,y))<30&&int(MpixelG(org_img ,x,y))<30&&int(MpixelR(org_img ,x,y))<30  ){
+                MpixelB(org_img ,x,y)= 0;
+                MpixelG(org_img ,x,y)= 0;
+                MpixelR(org_img ,x,y)= 0;
+            }
+        }
+    }
+    Mat obj_img = org_img;
+//    imshow("obj_img",obj_img);
+
+
+    /*Mat gray_img, binary_img,obj_img;
     blur(org_img,org_img, Size(3,3));
     cvtColor ( org_img , gray_img , COLOR_BGR2GRAY ) ;
     threshold ( gray_img , binary_img , 225 , 255 , THRESH_BINARY ) ;//todo 区域划分不精准
-    //    imshow("Binary",binary_img);
+//        imshow("Binary",binary_img);
 
     Mat reverse_img = 255 - binary_img;
     org_img.copyTo(obj_img);
@@ -110,18 +155,23 @@ Mat LoadData::get_obj_img(Mat org_img) {
                 MpixelR(obj_img ,x,y)= 0;
             }
         }
-    }
+    }*/
 //    imshow("obj_img",obj_img);
     return obj_img;
 }
 
 vector<double> LoadData::get_single_obj_feature(Mat & obj_img){
-//    imshow("obj_img" , obj_img ) ;
+//    imshow("obj_img111" , obj_img ) ;
     Mat obj_gray_img,obj_binary_img;
     cvtColor( obj_img , obj_gray_img , COLOR_BGR2GRAY );
+//    imshow("obj_gray_img" , obj_gray_img ) ;
+
     threshold ( obj_gray_img , obj_binary_img , 5 , 255 , THRESH_BINARY ) ;
+//    imshow("obj_binary_img" , obj_binary_img ) ;
+
     vector<vector<Point> > contours ;
-    findContours ( obj_binary_img , contours ,RETR_EXTERNAL, CHAIN_APPROX_SIMPLE) ;
+    findContours ( obj_binary_img , contours ,RETR_EXTERNAL, CHAIN_APPROX_NONE) ;
+
     Mat drawing = Mat::zeros( obj_binary_img.size(), CV_8UC3 );
     Scalar color = CV_RGB( 0, 255,0 );
     int largestcontour=0;
@@ -130,7 +180,8 @@ vector<double> LoadData::get_single_obj_feature(Mat & obj_img){
     vector< Point > hull;	// 凸包络的点集
     for(int i = 0; i< contours.size(); i++ ) {
         if(largestsize < contours[i].size()) {
-            largestsize=contours [ i ]. size () ; largestcontour=i ;
+            largestsize=contours [ i ]. size () ;
+            largestcontour=i ;
         }
 
     }
@@ -148,8 +199,10 @@ vector<double> LoadData::EllipticFourierDescriptors(vector<Point>& contour , vec
     vector<double> feature_values;
     int m = contour.size();
 
-    int n = 20;//number of CEs we are interested in computing
-//    int n = 5;//number of CEs we are interested in computing
+//    int n = 50;//number of CEs we are interested in computing
+    int n = 30;//number of CEs we are interested in computing
+//    int n = 20;//number of CEs we are interested in computing
+//    int n = 10;//number of CEs we are interested in computing
     float t=(2*M_PI)/m;
     for (int k = 0; k < n; k++) {
         ax.push_back(0.0);
@@ -187,7 +240,7 @@ LoadData::~LoadData() {
 /*====*/
 vector<string> LoadData:: getFiles(string cate_dir){
     vector<string> files;//存放文件名
-
+//    cout << "cate_dir:" <<cate_dir <<endl;
     DIR *dir;
     struct dirent *ptr;
     char base[1000];
@@ -202,9 +255,11 @@ vector<string> LoadData:: getFiles(string cate_dir){
     {
         if(strcmp(ptr->d_name,".")==0 || strcmp(ptr->d_name,"..")==0)    ///current dir OR parrent dir
             continue;
-        else if(ptr->d_type == 8)    ///file
-            //printf("d_name:%s/%s\n",basePath,ptr->d_name);
+        else if(ptr->d_type == 8){
+            ///file
+//            printf("d_name:%s/%s\n",base,ptr->d_name);
             files.push_back(ptr->d_name);
+        }
         else if(ptr->d_type == 10)    ///link file
             //printf("d_name:%s/%s\n",basePath,ptr->d_name);
             continue;
@@ -215,6 +270,7 @@ vector<string> LoadData:: getFiles(string cate_dir){
         }
     }
     closedir(dir);
+
     sort(files.begin(), files.end());
     return files;
 

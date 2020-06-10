@@ -16,6 +16,7 @@ source_group("Headers" FILES ${PROJECT_HEADERS})
 
 set(SOURCE_FILES src/demo.cpp src/LoadData.cpp include/LoadData.h)
 #set(SOURCE_FILES src/MLP_example.cpp)
+#set(SOURCE_FILES src/test.cpp)
 
 
 

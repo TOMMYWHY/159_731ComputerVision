@@ -55,7 +55,8 @@ read_num_class_data( const string& filename, int var_count,
 //char test;
 //test=buf[0]+65;
 //responses.push_back(test);
-cout << "responses " << buf[0] << " " ;;//<<  endl;
+//cout << "responses " << buf[0] << " " ;;//<<  endl;
+cout << "responses=> label: " << buf[0] << " " ;;//<<  endl;
         ptr = buf+2;
         for( i = 0; i < var_count; i++ )
         {
@@ -63,7 +64,8 @@ cout << "responses " << buf[0] << " " ;;//<<  endl;
             sscanf( ptr, "%f%n", &el_ptr.at<float>(i), &n );
             ptr += n + 1;
         }
-cout << el_ptr << endl;
+//cout << el_ptr << endl;
+cout <<"features size:"<< el_ptr.size() << "; features value:" << el_ptr << endl;
         if( i < var_count )
             break;
         _data->push_back(el_ptr);
@@ -106,7 +108,9 @@ static void test_and_save_classifier(const Ptr<StatModel>& model,
     for( i = 0; i < nsamples_all; i++ )
     {
         Mat sample = data.row(i);
-cout << "Sample: " << responses.at<int>(i)-48 << " row " << data.row(i) << endl;
+//        cout << "Sample org: " << sample << endl;
+
+        cout << "Sample-> label:" << responses.at<int>(i)-48 << " row: " << data.row(i) << endl;
         float r = model->predict( sample );
 cout << "Predict:  r = " << r << endl;
    if( (int)r == (int)(responses.at<int>(i)-48) ) //prediction is correct
@@ -123,16 +127,20 @@ cout << "Predict:  r = " << r << endl;
 
     //test_hr /= nsamples_all - ntrain_samples;
     //train_hr = ntrain_samples > 0 ? train_hr/ntrain_samples : 1.;
-    printf("ntrain_samples %d training_correct_predict %d \n",ntrain_samples, training_correct_predict);
+//    printf("ntrain_samples %d training_correct_predict %d \n",ntrain_samples, training_correct_predict);
+    printf("number of train_samples: %d ; training_correct_predict: %d \n",ntrain_samples, training_correct_predict);
     if( filename_to_save.empty() )  printf( "\nTest Recognition rate: training set = %.1f%% \n\n", training_correct_predict*100.0/ntrain_samples);
 
 
     if( !filename_to_save.empty() )
     {
+        cout << "X_train predict accuracy result: "<<training_correct_predict*100.0/ntrain_samples <<endl;
         model->save( filename_to_save );
+        cout << "model saved at: "<<filename_to_save <<endl;
+
     }
 /*************   Example of how to predict a single sample ************************/   
-// Use that for the assignment3, for every frame after computing the features, r is the prediction given the features listed in this format
+/*// Use that for the assignment3, for every frame after computing the features, r is the prediction given the features listed in this format
     //Mat sample = data.row(i);
     Mat sample1 = (Mat_<float>(1,9) << 1.52101, 13.64, 4.4899998, 1.1, 71.779999, 0.059999999, 8.75, 0, 0);// 1
     float r = model->predict( sample1 );
@@ -154,7 +162,7 @@ cout << "Predict:  r = " << r << endl;
     cout << "Prediction: " << r << endl;
     sample1 = (Mat_<float>(1,9) << 1.51131,13.69,3.2,1.81,72.81,1.76,5.43,1.19,0);//7
     r = model->predict( sample1 );
-    cout << "Prediction: " << r << endl;
+    cout << "Prediction: " << r << endl;*/
     
 /**********************************************************************/    
     
@@ -167,23 +175,27 @@ build_mlp_classifier( const string& data_filename,
                       const string& filename_to_save,
                       const string& filename_to_load )
 {
-    const int class_count = 7;//CLASSES
+    const int class_count = 10;//CLASSES
     Mat data;
     Mat responses;
 
-    bool ok = read_num_class_data( data_filename, 9, &data, &responses );//third parameter: FEATURES
+    bool ok = read_num_class_data( data_filename, 19, &data, &responses );//third parameter: FEATURES
+    /* data 出来后就已经不带label */
     if( !ok )
         return ok;
 
-    Ptr<ANN_MLP> model;
 
-    int nsamples_all = data.rows;
+//    Ptr<ANN_MLP> model;
+    Ptr<SVM> model;
+
+    int nsamples_all = data.rows;//9
     int ntrain_samples = (int)(nsamples_all*1.0);//SPLIT
 
     // Create or load MLP classifier
     if( !filename_to_load.empty() )
     {
-        model = load_classifier<ANN_MLP>(filename_to_load);
+//        model = load_classifier<ANN_MLP>(filename_to_load);
+        model = load_classifier<SVM>(filename_to_load);
         if( model.empty() )
             return false;
         //ntrain_samples = 0;
@@ -201,23 +213,38 @@ build_mlp_classifier( const string& data_filename,
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         Mat train_data = data.rowRange(0, ntrain_samples);
+        cout <<"train_data:"<<train_data<<endl;
         Mat train_responses = Mat::zeros( ntrain_samples, class_count, CV_32F );
 
         // 1. unroll the responses
         cout << "Unrolling the responses...\n";
+        /*testing svm*/
+        int y_train[ntrain_samples];
         for( int i = 0; i < ntrain_samples; i++ )
         {
             int cls_label = responses.at<int>(i) - 48;// - 'A'; //change to numerical classes, still they read as chars
-            cout << "labels " << cls_label << endl;
+            cout << "labels: " << cls_label << endl; // all labels
+            y_train[i]=cls_label;
             train_responses.at<float>(i, cls_label) = 1.f;
         }
+//        cout <<"train_responses:"<<train_responses<<endl;
+        cout << "y_train:"<<endl;
+        for (int j = 0; j < ntrain_samples; j++) {
+            cout<<y_train[j];
+        }
+        cout <<endl;
+        Mat labelsMat(ntrain_samples, 1, CV_32SC1, y_train);
+        cout <<"labelsMat:"<<labelsMat<<endl;
+
 
         // 2. train classifier
-        int layer_sz[] = { data.cols, 100, 100, class_count };
+        int layer_sz[] = { data.cols, 100, 100, class_count }; // data.cols:9; class_count:7
+        cout <<" data.cols:"<< data.cols<<"; class_count:"<<class_count<< endl;
 	cout <<  " sizeof layer_sz " << sizeof(layer_sz) << " sizeof layer_sz[0]) " << sizeof(layer_sz[0]) << endl;
-        int nlayers = (int)(sizeof(layer_sz)/sizeof(layer_sz[0]));
+        int nlayers = (int)(sizeof(layer_sz)/sizeof(layer_sz[0])); // 4 layers
 	cout << " nlayers  " << nlayers << endl;
         Mat layer_sizes( 1, nlayers, CV_32S, layer_sz );
+        cout <<"layer_sizes:"<<layer_sizes<<endl;
 
 #if 1
         int method = ANN_MLP::BACKPROP;
@@ -229,20 +256,27 @@ build_mlp_classifier( const string& data_filename,
         int max_iter = 1000;
 #endif
 
-        Ptr<TrainData> tdata = TrainData::create(train_data, ROW_SAMPLE, train_responses);
+//        Ptr<TrainData> tdata = TrainData::create(train_data, ROW_SAMPLE, train_responses);//X_train y_train
 
         cout << "Training the classifier (may take a few minutes)...\n";
-        model = ANN_MLP::create();
-        model->setLayerSizes(layer_sizes);
-        model->setActivationFunction(ANN_MLP::SIGMOID_SYM, 0, 0);
-        model->setTermCriteria(TC(max_iter,0));
-        model->setTrainMethod(method, method_param);
-        model->train(tdata);
+//        model = ANN_MLP::create();
+        model = SVM::create();
+        model->setType(SVM::C_SVC);
+        model->setKernel(SVM::LINEAR);
+        model->setTermCriteria(TermCriteria(TermCriteria::MAX_ITER, 1000, 1e-6));
+//        model->setLayerSizes(layer_sizes);
+//        model->setActivationFunction(ANN_MLP::SIGMOID_SYM, 0, 0);
+//        model->setTermCriteria(TC(max_iter,0));
+//        model->setTrainMethod(method, method_param);
+        model->train(train_data, ROW_SAMPLE, labelsMat);
+
+//        model->train(tdata);
+        cout << "==========================================================="<<endl;
         cout << endl;
     }
 
     //test_and_save_classifier(model, data, responses, ntrain_samples, 'A', filename_to_save);
-    test_and_save_classifier(model, data, responses, ntrain_samples, 0, filename_to_save);
+    test_and_save_classifier(model, data, responses, ntrain_samples, 0, filename_to_save);//model,X_train,y_train,numberOfTrain
     return true;
 }
 
@@ -252,7 +286,8 @@ int main( int argc, char *argv[] )
     string filename_to_save = "";
     string filename_to_load = "";
 //    string data_filename = "letter-recognition.data";
-    string data_filename = "./res/Glass.data";
+//    string data_filename = "./res/Glass.data";
+    string data_filename = "./res/all_img.data";
     int method = 0;
 
     int i;
@@ -275,5 +310,25 @@ int main( int argc, char *argv[] )
             filename_to_load = argv[i];
         }
     }
-    build_mlp_classifier( data_filename, filename_to_save, filename_to_load );
+    //// -save => train
+//    build_mlp_classifier( data_filename, filename_to_save, filename_to_load );
+    build_mlp_classifier( data_filename, "./res/example.xml", "" );
+//    build_mlp_classifier( data_filename, "./res/svm.xml", "" );
+    ////-load =>test
+//    build_mlp_classifier( data_filename, filename_to_save, "./res/example.xml" );
+//    build_mlp_classifier( data_filename, filename_to_save, "./res/svm.xml" );
+
+
+    //// predict single sample
+/*    Ptr<ANN_MLP> model;
+//    model = load_classifier<ANN_MLP>("./res/Glass_ann_model.xml");
+//    model = load_classifier<ANN_MLP>("./res/example.xml");
+    model = load_classifier<ANN_MLP>("./res/svm.xml");
+    Mat sample1 = (Mat_<float>(1,19) <<
+            1,2,0.284939,0.261715,0.160452,0.134772,0.0717682,0.0756268,0.0253272,0.0627666,0.0381276,0.0512265,0.0263801,0.0324016,0.0108194,0.0181418,0.0190363,0.0158201,0.0157993,0.0127437,0.00545302
+            //1
+            );
+    float r = model->predict( sample1 );
+    cout << "Prediction: " << r << endl;*/
+
 }
