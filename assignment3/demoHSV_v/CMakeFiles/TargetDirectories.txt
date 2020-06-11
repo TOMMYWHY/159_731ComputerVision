@@ -1,3 +1,0 @@
-/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demoHSV_v/CMakeFiles/rebuild_cache.dir
-/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demoHSV_v/CMakeFiles/edit_cache.dir
-/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment3/demoHSV_v/CMakeFiles/gesture.dir
