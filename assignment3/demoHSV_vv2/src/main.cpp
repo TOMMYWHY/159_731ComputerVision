@@ -1,3 +1,26 @@
+/*
+ *  Assignment 3:Recognising gestures from images, 159.731, S1 2020
+ *  Family Name: JIANG , Given Name: TAO , Student ID:20004769,
+ *
+ *  run ./gesture train                  : extract trainset images features save to file and build a ANN model
+ *  run ./gesture test                   : extract testset images features save to file and test the ANN model
+ *  run ./gesture                        : use web-camera to  predict
+ *  run ./gesture ./images/test/0_A.jpg  : processes a single static image
+ *
+ *
+ *  the model save as ./res/gesture.xml
+ *  the trainset features save as ./res/gesture_train.data
+ *  the testset features save as ./res/gesture_test.data
+ *
+ *
+ * ANN model:
+ * 3 hidden fully connected layers with 100 Neurons
+ * epochs:500
+ * learning rate:0.0001
+ * */
+
+
+
 
 #include <iostream>
 #include <fstream>
@@ -71,41 +94,48 @@ int main(int argc, char *argv[]){
     string command = "";
     string single_file_path="";
 
-/*    if( strcmp(argv[1],"train") == 0 ){
-        command = "train";
-    }
-    else if( strcmp(argv[1],"test") == 0 ){
-        command = "test";
-    }
-    else if( strcmp(argv[1],"webcam") == 0 ){
+    if(argc == 1){
         command = "webcam";
-    }else{
-        command = "static";
-        single_file_path = argv[1];
-    }*/
+    }
+    else if (argc == 2){
+        if( strcmp(argv[1],"train") == 0 ){
+            command = "train";
+        }
+        else if( strcmp(argv[1],"test") == 0 ){
+            command = "test";
+        }
+        else{
+            command = "static";
+            single_file_path = argv[1];
+        }
+    }
 
 
 //     command = "train";
 //     command = "test";
-     command = "static";
+//     command = "static";
 //     command = "webcam";
 
      if(command=="train"){
         /* step1: build model and save modeling file */
+         cout <<"train model." <<endl;
          training( data_filename, sample_dir_path, model_file);
     }
     else if(command=="test"){
          /* step2: predict test file iamges */
+         cout <<"test model." <<endl;
          testing( data_filename, sample_dir_path, model_file);
     }
     else if(command=="static"){
          /* step3: predict one iamge */
+         cout <<"static model." <<endl;
          single_file_path ="./images/test/0_A.jpg";
 //         single_file_path ="./images/test/5_C.jpg";
          Mat test_img = imread(single_file_path,1);//0
          single_test( test_img, model_file);
      }
     else if(command=="webcam"){
+        cout <<"web-camera model." <<endl;
          /* step4: webcam predict */
          Ptr<ANN_MLP> model;
          model = load_classifier<ANN_MLP>(model_file);
@@ -195,6 +225,11 @@ void single_test(Mat test_img,string model_file){
     cout << "sample1:"<<test_sample<< endl;
     float r = model->predict( test_sample );
     cout << "predict result :"<< r <<endl;
+    char print_it[100];
+    sprintf( print_it, " Predict: %d" , int(r)) ;
+    putText ( test_img ,print_it, Point( 10 , 30 ) , FONT_HERSHEY_PLAIN,
+              2 , Scalar(255 ,0 ,0) , 2 , 8);
+    imshow("test_img",test_img);
 }
 
 /*=================utils function=======================*/
