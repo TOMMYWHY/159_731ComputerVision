@@ -19,7 +19,7 @@
  
  
 ### ANN model:
-  > 3 hidden fully connected layers with 100 Neurons
+  > 2 hidden fully connected layers with 100 Neurons
   
   > epochs:500
   

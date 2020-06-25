@@ -14,7 +14,7 @@
  *
  *
  * ANN model:
- * 3 hidden fully connected layers with 100 Neurons
+ * 2 hidden fully connected layers with 100 Neurons
  * epochs:500
  * learning rate:0.0001
  * */
@@ -66,7 +66,7 @@ void extract_features_save_to_file(const string& train_sample_dir_path,const str
 void training(string data_filename,string sample_dir_path,string model_file);
 void testing(string data_filename,string sample_dir_path,string model_file);
 void single_test(Mat test_img,string model_file);
-#if 1
+
 /*track bar control*/
 int iLowH = 0,iLowS=27,iLowV=82, iHighH=179,iHighS=255,iHighV=255;
 //iLowH:0 iLowS: 27 iLowV: 82 iHighH: 179 iHighS: 255 iHighV: 255
@@ -117,6 +117,7 @@ int main(int argc, char *argv[]){
 //     command = "test";
 //     command = "static";
 //     command = "webcam";
+//        command="testing";
 
      if(command=="train"){
         /* step1: build model and save modeling file */
@@ -131,12 +132,13 @@ int main(int argc, char *argv[]){
     else if(command=="static"){
          /* step3: predict one iamge */
          cout <<"static model." <<endl;
-         single_file_path ="./images/test/4_C.jpg";
+//         single_file_path ="./images/test/4_C.jpg";
 //         single_file_path ="./images/test/9_D.jpg";
 //         single_file_path ="./images/test/4_D.jpg";
          Mat test_img = imread(single_file_path,1);//0
          single_test( test_img, model_file);
      }
+
     else if(command=="webcam"){
         cout <<"web-camera model." <<endl;
          /* step4: webcam predict */
@@ -198,7 +200,7 @@ int main(int argc, char *argv[]){
     waitKey(0);
     return 0;
 }
-#endif
+
 
 void training(string data_filename,string sample_dir_path,string model_file){
     int flag = 0; //0: trainset;
@@ -516,8 +518,8 @@ build_mlp_classifier( const string& data_filename,
         // 2. train classifier
 //        int layer_sz[] = { data.cols, 100, 100 ,100, class_count }; // 97.7143
 //        int layer_sz[] = { data.cols, 100, 100,100 ,100, class_count }; //95.4286
-//        int layer_sz[] = { data.cols, 100, 100, class_count }; //98.7143
-        int layer_sz[] = { data.cols, 100, class_count }; //98.4286 todo ?????
+        int layer_sz[] = { data.cols, 100, 100, class_count }; //98.7143
+//        int layer_sz[] = { data.cols, 100, class_count }; //98.4286 todo ?????
 //        int layer_sz[] = { data.cols,32, 64, 128,256,128 ,64,32, class_count }; //
 //        int layer_sz[] = { data.cols, 128,256,256,128, class_count }; // 92.8571
 //        int layer_sz[] = { data.cols, 256,512,512,256, class_count }; //94
