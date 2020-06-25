@@ -147,11 +147,11 @@ int main (int argc, char *argv[]){
 
 
 
-//     flag = "b_train";//build trainset
+     flag = "b_train";//build trainset
 //     flag = "b_test";//build testset
 //     flag = "T";//Train
 //     flag = "t";//test
-//     flag = "s";//static
+     flag = "s";//static
        flag = "w";//webcam
     if(flag == "b_train"){
  /* step1: Load trainning images and get CE features */

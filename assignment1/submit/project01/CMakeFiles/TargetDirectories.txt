@@ -1,3 +1,0 @@
-/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment1/submit/project01/CMakeFiles/rebuild_cache.dir
-/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment1/submit/project01/CMakeFiles/edit_cache.dir
-/Users/Tommy/Desktop/studyInMassey/159_731ComputerVision/assignment1/submit/project01/CMakeFiles/kuwahara.dir
